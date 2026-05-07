@@ -633,16 +633,46 @@ function goToStep3() {
 }
 
 function submitOrder() {
+  // ⬇️ ЭНИЙГ ӨӨРИЙН FACEBOOK PAGE ЛИНКЭЭР СОЛИНО УУ
+  const FB_PAGE_USERNAME = 'Ari korea shop'; // жш: 'AriShopMongolia'
+
+  const orderNum = 'АШ-' + Math.floor(100000 + Math.random() * 900000);
+
+  const name = document.getElementById('lastName').value + ' ' + document.getElementById('firstName').value;
+  const phone = document.getElementById('phone').value;
+  const productUrl = document.getElementById('productUrl').value;
+  const productName = document.getElementById('productName').value || 'Тодорхойгүй';
+  const price = document.getElementById('price').value;
+  const qty = document.getElementById('qty').value;
+  const address = document.getElementById('address').value;
+  const delivery = document.getElementById('deliveryType').value === 'express' ? 'Хурдан (5-7 хоног)' : 'Стандарт (7-14 хоног)';
+  const payment = document.querySelector('input[name="payment"]:checked').value === 'qpay' ? 'QPay' : 'Банкны шилжүүлэг';
+
+  const msg = `🛒 ШИНЭ ЗАХИАЛГА ${orderNum}
+
+👤 Нэр: ${name}
+📱 Утас: ${phone}
+📍 Хаяг: ${address}
+
+📦 Бараа: ${productName}
+🔗 Линк: ${productUrl}
+💰 Үнэ: ₩${price} (× ${qty} ширхэг)
+✈️ Хүргэлт: ${delivery}
+💳 Төлбөр: ${payment}`;
+
+  const messengerUrl = `https://m.me/${FB_PAGE_USERNAME}?text=${encodeURIComponent(msg)}`;
+
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = '⏳ Илгээж байна...';
+
   setTimeout(() => {
-    const orderNum = 'АШ-' + Math.floor(100000 + Math.random() * 900000);
     document.getElementById('orderNum').textContent = orderNum;
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
     window.scrollTo({top:0, behavior:'smooth'});
-  }, 1500);
+    window.open(messengerUrl, '_blank');
+  }, 1000);
 }
 </script>
 </body>
