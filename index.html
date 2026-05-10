@@ -373,6 +373,97 @@
   </div>
 </section>
 
+
+<!-- FEATURED PRODUCTS -->
+<section class="section" id="featured" style="padding-top: 60px; padding-bottom: 60px;">
+  <p class="section-tag">Онцлох бараанууд</p>
+  <h2 class="section-title">Хамгийн их захиалагддаг</h2>
+  <p class="section-sub" style="margin-bottom: 32px;">Монголчуудын дунд хамгийн алдартай бараанууд</p>
+
+  <!-- Category filter -->
+  <div style="display:flex;gap:8px;margin-bottom:28px;overflow-x:auto;padding-bottom:4px">
+    <button onclick="filterHome(this,'all')" class="hcat active" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(232,55,61,0.5);background:var(--red);color:white;white-space:nowrap;font-family:'Outfit',sans-serif">Бүгд</button>
+    <button onclick="filterHome(this,'beauty')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">💄 Гоо сайхан</button>
+    <button onclick="filterHome(this,'tech')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">📱 Электроник</button>
+    <button onclick="filterHome(this,'fashion')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">👟 Хувцас</button>
+    <button onclick="filterHome(this,'food')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">🍜 Хүнс</button>
+  </div>
+
+  <div id="homeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px"></div>
+
+  <div style="text-align:center;margin-top:36px">
+    <a href="catalog.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;
+      border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#F0EEE9;
+      text-decoration:none;font-weight:600;font-size:15px;transition:all .2s"
+      onmouseover="this.style.borderColor='rgba(232,55,61,0.4)'"
+      onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+      Бүх бараа харах →
+    </a>
+  </div>
+</section>
+
+<script>
+const HP=[
+  {id:1,name:'Laneige Уруулын маск',price:18000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=300&fit=crop',rating:4.8,badge:'Бестселлер'},
+  {id:2,name:'Samsung Galaxy Buds2 Pro',price:159000,plat:'coupang',cat:'tech',img:'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=300&h=300&fit=crop',rating:4.6},
+  {id:3,name:'COSRX Хясаа тос 100мл',price:22000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300&h=300&fit=crop',rating:4.9,badge:'-15%'},
+  {id:4,name:'Nike Air Force 1',price:119000,plat:'gmarket',cat:'fashion',img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop',rating:4.7},
+  {id:5,name:'Шинрамён 5 ширхэг',price:8500,plat:'coupang',cat:'food',img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop',rating:4.9,badge:'Шинэ'},
+  {id:6,name:'AirPods Pro 2',price:329000,plat:'coupang',cat:'tech',img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=300&h=300&fit=crop',rating:4.8},
+  {id:7,name:'Adidas Samba OG',price:109000,plat:'naver',cat:'fashion',img:'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=300&h=300&fit=crop',rating:4.7},
+  {id:8,name:'Витамин С сэрүм',price:28000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=300&fit=crop',rating:4.7,badge:'-20%'},
+];
+const PC2={coupang:'#FF4040',naver:'#00C864',gmarket:'#4A9FFF'};
+const PN2={coupang:'쿠팡',naver:'Naver',gmarket:'Gmarket'};
+let homeCat='all';
+
+function filterHome(btn,cat){
+  document.querySelectorAll('.hcat').forEach(b=>{
+    b.style.background='transparent';b.style.color='#888899';
+    b.style.borderColor='rgba(255,255,255,0.07)';
+  });
+  btn.style.background='#E8373D';btn.style.color='white';
+  btn.style.borderColor='rgba(232,55,61,0.5)';
+  homeCat=cat; renderHome();
+}
+
+function renderHome(){
+  const list=homeCat==='all'?HP:HP.filter(p=>p.cat===homeCat);
+  document.getElementById('homeGrid').innerHTML=list.map(p=>`
+    <div onclick="location.href='order.html?url=https://coupang.com&title=${encodeURIComponent(p.name)}&price=${p.price}&platform=${p.plat}'"
+      style="background:#13131C;border:1px solid rgba(255,255,255,0.07);border-radius:14px;
+      overflow:hidden;cursor:pointer;transition:all .25s"
+      onmouseover="this.style.borderColor='rgba(232,55,61,0.3)';this.style.transform='translateY(-3px)'"
+      onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.transform='translateY(0)'">
+      <div style="position:relative;padding-top:100%;background:#1A1A26">
+        <img src="${p.img}" alt="${p.name}"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"
+          onerror="this.src='https://via.placeholder.com/300x300/1A1A26/555?text=📦'">
+        <div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;
+          padding:3px 7px;border-radius:100px;background:${PC2[p.plat]}22;
+          color:${PC2[p.plat]};border:1px solid ${PC2[p.plat]}44">${PN2[p.plat]}</div>
+        ${p.badge?`<div style="position:absolute;top:8px;right:8px;background:#E8373D;color:white;
+          font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px">${p.badge}</div>`:''}
+      </div>
+      <div style="padding:12px">
+        <div style="font-size:12px;color:#F0EEE9;line-height:1.4;margin-bottom:6px;
+          display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.name}</div>
+        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
+          <span style="font-size:14px;font-weight:700">₩${p.price.toLocaleString()}</span>
+          <span style="font-size:11px;color:#F5A623">≈${Math.round(p.price*0.91).toLocaleString()}₮</span>
+        </div>
+        <button onclick="event.stopPropagation();location.href='order.html?title=${encodeURIComponent(p.name)}&price=${p.price}&platform=${p.plat}'"
+          style="width:100%;background:#E8373D;color:white;border:none;padding:9px;
+          border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif">
+          Захиалах →
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+renderHome();
+</script>
+
 <!-- PLATFORMS -->
 <section class="section" id="platforms">
   <p class="section-tag">Дэлгүүрүүд</p>
