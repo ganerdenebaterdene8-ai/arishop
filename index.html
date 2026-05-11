@@ -450,7 +450,7 @@ function renderHome(){
           display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.name}</div>
         <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
           <span style="font-size:14px;font-weight:700">₩${p.price.toLocaleString()}</span>
-          <span style="font-size:11px;color:#F5A623">≈${Math.round(p.price*0.91).toLocaleString()}₮</span>
+          <span style="font-size:11px;color:#F5A623">≈${Math.round(p.price*2.7).toLocaleString()}₮</span>
         </div>
         <button onclick="event.stopPropagation();location.href='order.html?title=${encodeURIComponent(p.name)}&price=${p.price}&platform=${p.plat}'"
           style="width:100%;background:#E8373D;color:white;border:none;padding:9px;
@@ -665,7 +665,7 @@ renderHome();
     const price = parseFloat(document.getElementById('price').value) || 0;
     const weight = parseFloat(document.getElementById('weight').value) || 0;
     const delivery = document.getElementById('delivery').value;
-    const WON_TO_MNT = 0.91;
+    const WON_TO_MNT = 2.7;
     const serviceFee = 0.08;
     const ratePerGram = delivery === 'express' ? 8.5 : 5.5;
     const priceInMNT = price * WON_TO_MNT;
