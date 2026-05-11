@@ -766,7 +766,13 @@ const CSYS=`Та АриШопын AI туслах чат. АриШоп нь Со
 цүнх=가방, хувцас=의류, цамц=티셔츠
 витамин=비타민, женьшень=홍삼
 
-Бусад асуултад монгол хэлээр богино тодорхой хариулт өг.`;let copen=false,cbusy=false,chist=[];
+Бусад асуултад монгол хэлээр богино тодорхой хариулт өг.
+
+МӨНГӨНИЙ ХЭЛЦ:
+- "тэдээр", "эдээр", "түүгээр" гэж огт хэлэхгүй
+- Заавал тодорхой дүнг хэл: "50,000 вон нь 135,000 төгрөг" гэх мэт
+- Жишээ: ₩89,000 → "89,000 вон буюу 240,300 төгрөг болно"
+- Тооцоолол: вон дүнг 2.7-оор үржүүлнэ`;let copen=false,cbusy=false,chist=[];
 function ctoggle(){copen=!copen;document.getElementById('cwin').classList.toggle('copen',copen);document.getElementById('cfab').innerHTML=copen?'✕':'💬<div class="chat-badge"></div>';if(copen&&!chist.length)setTimeout(()=>cbot('Сайн байна уу! 👋 АриШопт тавтай морилно уу.\nСолонгосоос бараа захиалах талаар асуух зүйл байвал туслахад бэлэн!'),400)}
 function cbot(t){const m=document.getElementById('cmsgs'),d=document.createElement('div');d.className='cmsg bot';const tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="cbub">${t.replace(/\n/g,'<br>')}</div><div class="ctime">${tm}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight}
 function cuser(t){const m=document.getElementById('cmsgs'),d=document.createElement('div');d.className='cmsg user';const tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="cbub">${t}</div><div class="ctime">${tm}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight}
