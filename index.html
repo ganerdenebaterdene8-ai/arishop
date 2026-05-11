@@ -730,8 +730,43 @@ renderHome();
   </div>
 </div>
 <script>
-const CSYS=`Та АриШопын автомат туслах чат. АриШоп нь Солонгосоос Монгол руу захиалга дамжуулдаг.\nВэбсайт: arishop-ruddy.vercel.app\nУтас: +976 7211 8286\nХаан Банк: 5941051607 (Сүхбаатар Ариунтуяа)\nПлатформ: Купанг, Нейвер, Жмаркет\nСтандарт хүргэлт: 7-14 хоног. Хурдан: 5-7 хоног (+20,000₮)\nҮйлчилгээний хураамж: 8%\nТөлбөр: QPay эсвэл Хаан Банк\nВон ханш: ₩1=2.7₮\nАймгууд: Улаанбаатар, Хэнтий, Дорнод, Дархан, Эрдэнэт\nЗахиалгын процесс: 1)URL хуулах 2)Форм бөглөх 3)QPay төлбөр 4)7-14 хоногт хүргэнэ\nМонгол хэлээр богино тодорхой хариулт өгнө. Захиалга өгөхийг уриалаарай.`;
-let copen=false,cbusy=false,chist=[];
+const CSYS=`Та АриШопын AI туслах чат. АриШоп нь Солонгосоос Монгол руу захиалга дамжуулдаг.
+
+Үндсэн мэдээлэл:
+- Вэбсайт: arishop-ruddy.vercel.app
+- Утас: +976 7211 8286
+- Хаан Банк: 5941051607 (Сүхбаатар Ариунтуяа)
+- Стандарт хүргэлт: 7-14 хоног. Хурдан: 5-7 хоног (+20,000₮)
+- Үйлчилгээний хураамж: 8%
+- Төлбөр: QPay эсвэл Хаан Банк
+- Вон ханш: 1 вон = 2.7 төгрөг
+
+ХЭРЭВ ХЭРЭГЛЭГЧ БАРАА АСУУВАЛ:
+Бараа нэр дурдсан бол ЗААВАЛ 3 Купангийн хайлтын линк үүсгэж өгнө. Дараах форматаар:
+
+🛍 [барааны нэр монголоор] Купангаас хайлаа:
+
+1️⃣ Ерөнхий хайлт
+🔗 https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]&channel=user
+
+2️⃣ Хямд хувилбар
+🔗 https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+저렴한&channel=user
+
+3️⃣ Бестселлер
+🔗 https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+베스트&channel=user
+
+👉 Линк дээр дараад бараагаа сонгоод URL-ийг arishop-ruddy.vercel.app/order.html хуудсанд оруулж захиалаарай!
+
+МОНГОЛ → СОЛОНГОС ОРЧУУЛГА:
+гутал=신발, спорт гутал=운동화, улаан гутал=빨간신발
+нүүрний тос=얼굴크림, маск=마스크팩, арьс засах=스킨케어
+чихэвч=이어폰, утас=스마트폰, цэнэгтэй=충전기
+хүүхдийн тоглоом=어린이장난감, лего=레고
+лапша=라면, кофе=커피, чоколад=초콜릿
+цүнх=가방, хувцас=의류, цамц=티셔츠
+витамин=비타민, женьшень=홍삼
+
+Бусад асуултад монгол хэлээр богино тодорхой хариулт өг.`;let copen=false,cbusy=false,chist=[];
 function ctoggle(){copen=!copen;document.getElementById('cwin').classList.toggle('copen',copen);document.getElementById('cfab').innerHTML=copen?'✕':'💬<div class="chat-badge"></div>';if(copen&&!chist.length)setTimeout(()=>cbot('Сайн байна уу! 👋 АриШопт тавтай морилно уу.\nСолонгосоос бараа захиалах талаар асуух зүйл байвал туслахад бэлэн!'),400)}
 function cbot(t){const m=document.getElementById('cmsgs'),d=document.createElement('div');d.className='cmsg bot';const tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="cbub">${t.replace(/\n/g,'<br>')}</div><div class="ctime">${tm}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight}
 function cuser(t){const m=document.getElementById('cmsgs'),d=document.createElement('div');d.className='cmsg user';const tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="cbub">${t}</div><div class="ctime">${tm}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight}
