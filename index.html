@@ -801,7 +801,7 @@ async function cmsg(){
   td.id='ctd';td.innerHTML='<div class="ctyping"><span></span><span></span><span></span></div>';
   m.appendChild(td);m.scrollTop=m.scrollHeight;
   try{
-    const r=await fetch('https:///api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:CSYS,messages:chist})});
+    const r=await fetch('https://api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:CSYS,messages:chist})});
     const data=await r.json();
     const reply=data.content?.[0]?.text||'Уучлаарай алдаа гарлаа. +976 7211 8286';
     document.getElementById('ctd')?.remove();
