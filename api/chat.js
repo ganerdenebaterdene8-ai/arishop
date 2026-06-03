@@ -1,12 +1,10 @@
 // 1. Coupang-аас скрапинг хийж бараа хайх функц
 async function searchCoupang(keyword) {
   try {
-    // Түлхүүр үгийг URL-д тохирсон хэлбэрт оруулна
     const encodedKeyword = encodeURIComponent(keyword);
     const targetUrl = `https://www.coupang.com/np/search?q=${encodedKeyword}`;
     
     // ScraperAPI ашиглан Coupang-ийн хамгаалалтыг нэвтэрнэ
-    // Танд ScraperAPI-ийн үнэгүй API KEY хэрэгтэй (https://www.scraperapi.com/)
     const scraperApiKey = process.env.SCRAPERAPI_KEY; 
     const proxyUrl = `https://api.scraperapi.com/?api_key=${scraperApiKey}&url=${encodeURIComponent(targetUrl)}`;
 
@@ -15,8 +13,6 @@ async function searchCoupang(keyword) {
 
     const html = await response.text();
     
-    // HTML-ээс барааны мэдээллийг Regex (тогтмол илэрхийлэл) ашиглан ялгаж авах
-    // Vercel serverless дээр Cheerio суулгах шаардлагагүйгээр ингэж шийдэж болно
     const items = [];
     const itemRegex = /<li class="search-product"[^>]*>([\s\S]*?)<\/li>/g;
     let match;
@@ -24,13 +20,9 @@ async function searchCoupang(keyword) {
     while ((match = itemRegex.exec(html)) !== null && items.length < 3) {
       const itemHtml = match[1];
       
-      // Барааны нэр гаргах
       const nameMatch = itemHtml.match(/<div class="name">([^<]+)<\/div>/);
-      // Барааны үнэ гаргах
       const priceMatch = itemHtml.match(/<strong class="price-value">([^<]+)<\/strong>/);
-      // Барааны линк гаргах
       const linkMatch = itemHtml.match(/<a href="([^"]+)"[^>]*class="search-product-link"/);
-      // Барааны зураг гаргах
       const imgMatch = itemHtml.match(/<img[^>]*class="search-product-wrap-img"[^>]*src="([^"]+)"/);
 
       if (nameMatch && priceMatch && linkMatch) {
@@ -64,10 +56,9 @@ export default async function handler(req, res) {
 
     let coupangContext = "";
 
-    // Хэрэглэгч ямар нэгэн бараа хайхыг хүссэн үед (жишээ нь: "коллаген хайж өг", "коллаген байна уу")
+    // Хэрэглэгч ямар нэгэн бараа хайхыг хүссэн үед
     if (userMessage.includes("хай") || userMessage.includes("байна уу") || userMessage.includes("авъя") || userMessage.includes("авах")) {
       
-      // Хэрэглэгчийн өгүүлбэрээс "хайж өг", "байна уу" гэх мэт туслах үгсийг хасч цэвэр түлхүүр үгийг авна
       const cleanKeyword = userMessage
         .replace(/хайж|хаяарай|өгөөрэй|өгөөч|байна уу|байна|авъя|авах|уу|олно уу/g, "")
         .trim();
@@ -86,7 +77,6 @@ export default async function handler(req, res) {
       }
     }
 
-    // Хэрэв Coupang-аас бараа олдсон бол түүнийг Groq-ийн модель руу контекст болгож хамт илгээнэ
     const finalSystemPrompt = (system || '') + coupangContext;
 
     const allMessages = [
