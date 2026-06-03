@@ -1,10 +1,8 @@
-// 1. Coupang-аас скрапинг хийж бараа хайх функц
 async function searchCoupang(keyword) {
   try {
     const encodedKeyword = encodeURIComponent(keyword);
     const targetUrl = `https://www.coupang.com/np/search?q=${encodedKeyword}`;
     
-    // ScraperAPI ашиглан Coupang-ийн хамгаалалтыг нэвтэрнэ
     const scraperApiKey = process.env.SCRAPERAPI_KEY; 
     const proxyUrl = `https://api.scraperapi.com/?api_key=${scraperApiKey}&url=${encodeURIComponent(targetUrl)}`;
 
@@ -56,7 +54,6 @@ export default async function handler(req, res) {
 
     let coupangContext = "";
 
-    // Хэрэглэгч ямар нэгэн бараа хайхыг хүссэн үед
     if (userMessage.includes("хай") || userMessage.includes("байна уу") || userMessage.includes("авъя") || userMessage.includes("авах")) {
       
       const cleanKeyword = userMessage
