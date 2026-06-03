@@ -1,20 +1,20 @@
-// Search products on Coupang
+// Search products from Coupang
 async function searchCoupang(keyword) {
   try {
-    // Encode keyword for URL
+    // Encode search keyword for URL
     const encodedKeyword = encodeURIComponent(keyword);
 
-    // Coupang search URL
+    // Coupang search page URL
     const targetUrl = `https://www.coupang.com/np/search?q=${encodedKeyword}`;
 
-    // ScraperAPI key from environment variables
+    // Get ScraperAPI key from environment variables
     const scraperApiKey = process.env.SCRAPERAPI_KEY;
 
-    // Proxy URL through ScraperAPI
+    // Build proxy URL through ScraperAPI
     const proxyUrl =
       `https://api.scraperapi.com/?api_key=${scraperApiKey}&url=${encodeURIComponent(targetUrl)}`;
 
-    // Fetch HTML content
+    // Fetch HTML from Coupang
     const response = await fetch(proxyUrl);
 
     if (!response.ok) return null;
@@ -22,32 +22,32 @@ async function searchCoupang(keyword) {
     const html = await response.text();
     const items = [];
 
-    // Extract product list items
-    const itemRegex = /<li class="search-product"[^>]*>([\s\S]*?)<\/li>/g;
+    // Find product blocks in HTML
+    const itemRegex =
+      /<li class="search-product"[^>]*>([\s\S]*?)<\/li>/g;
 
     let match;
 
+    // Extract up to 3 products
     while ((match = itemRegex.exec(html)) !== null && items.length < 3) {
       const itemHtml = match[1];
 
-      // Extract product information
-      const nameMatch = itemHtml.match(
-        /<div class="name">([^<]+)<\/div>/
-      );
+      // Extract product details
+      const nameMatch =
+        itemHtml.match(/<div class="name">([^<]+)<\/div>/);
 
-      const priceMatch = itemHtml.match(
-        /<strong class="price-value">([^<]+)<\/strong>/
-      );
+      const priceMatch =
+        itemHtml.match(/<strong class="price-value">([^<]+)<\/strong>/);
 
-      const linkMatch = itemHtml.match(
-        /<a href="([^"]+)"[^>]*class="search-product-link"/
-      );
+      const linkMatch =
+        itemHtml.match(/<a href="([^"]+)"[^>]*class="search-product-link"/);
 
-      const imgMatch = itemHtml.match(
-        /<img[^>]*class="search-product-wrap-img"[^>]*src="([^"]+)"/
-      );
+      const imgMatch =
+        itemHtml.match(
+          /<img[^>]*class="search-product-wrap-img"[^>]*src="([^"]+)"/
+        );
 
-      // Save product if required data exists
+      // Store product if required data exists
       if (nameMatch && priceMatch && linkMatch) {
         items.push({
           title: nameMatch[1].trim(),
@@ -66,7 +66,7 @@ async function searchCoupang(keyword) {
   }
 }
 
-// API Handler
+// API Route Handler
 export default async function handler(req, res) {
 
   // Enable CORS
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight request
+  // Handle browser preflight requests
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -87,6 +87,7 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const { messages, system } = req.body;
 
     // Get latest user message
@@ -103,7 +104,7 @@ export default async function handler(req, res) {
       userMessage.includes("авах")
     ) {
 
-      // Clean search keyword
+      // Remove common Mongolian search phrases
       const cleanKeyword = userMessage
         .replace(
           /хайж|хаяарай|өгөөрэй|өгөөч|байна уу|байна|авъя|авах|уу|олно уу/g,
@@ -113,36 +114,39 @@ export default async function handler(req, res) {
 
       if (cleanKeyword.length > 1) {
 
-        // Search Coupang
+        // Search Coupang products
         const products =
           await searchCoupang(cleanKeyword);
 
         if (products) {
 
+          // Inject product results into system prompt
           coupangContext =
-            `\n\n[System Info: Found the following products on Coupang for "${cleanKeyword}". Show them nicely to the user with links.]\n`;
+            `\n\n[System Info: Found the following products on Coupang for "${cleanKeyword}". STRICT RULE: You MUST format product links as clickable Markdown links like [Product Name](URL). Never show raw URLs. Include prices.]\n`;
 
           products.forEach((p, index) => {
             coupangContext +=
-              `${index + 1}. ${p.title}\n` +
+              `${index + 1}. [${p.title}](${p.link})\n` +
               `Price: ${p.price}\n` +
-              `Link: ${p.link}\n` +
               `Image: ${p.image}\n\n`;
           });
 
         } else {
 
           coupangContext =
-            `\n\n[System Info: No products found on Coupang for "${cleanKeyword}".]`;
+            `\n\n[System Info: Sorry, no products found on Coupang for "${cleanKeyword}".]`;
 
         }
       }
     }
 
-    // Add product information into system prompt
+    // Add extra instructions to force Markdown links
     const finalSystemPrompt =
-      (system || "") + coupangContext;
+      (system || "") +
+      coupangContext +
+      "\nCRITICAL: Always display product links as clickable Markdown [Product Title](URL). Never output raw link text.";
 
+    // Build conversation messages
     const allMessages = [
       {
         role: "system",
@@ -175,6 +179,7 @@ export default async function handler(req, res) {
       data.choices?.[0]?.message?.content ||
       "Sorry, an error occurred.";
 
+    // Return response to client
     return res.status(200).json({
       content: [
         {
@@ -186,12 +191,13 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
+    // Handle server errors
     return res.status(500).json({
       content: [
         {
           type: "text",
           text:
-            "An error occurred. Please contact support: +976 7211 8286"
+            "An error occurred. Contact support: +976 7211 8286"
         }
       ]
     });
