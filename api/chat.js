@@ -107,16 +107,9 @@ export default async function handler(req, res) {
           coupangContext =
             `\n\n[System Info: Found products on Coupang for "${cleanKeyword}". Always show product name, price and clickable markdown link.]\n`;
 
-          products.forEach((p, index) => {
-            coupangContext += `
-${index + 1}. [${p.title}](${p.link})
-Price: ${p.price}
-Image: ${p.image}
-
-`;
-          });
-
-        } else {
+products.forEach((p, index) => {
+  coupangContext += `\n${index + 1}. ${p.title}\nPrice: ${p.price}\nLink: ${p.link}\nImage: ${p.image}\n`;
+});        } else {
 
           coupangContext =
             `\n\n[System Info: No Coupang products found for "${cleanKeyword}".]`;
