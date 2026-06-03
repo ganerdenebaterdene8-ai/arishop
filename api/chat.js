@@ -11,28 +11,32 @@ async function searchCoupang(keyword) {
     const html = await response.text();
     const items = [];
 
-    const itemRegex = /<li class="search-product"[^>]*>([\s\S]*?)<\/li>/g;
+    // More flexible regex — handles attributes in any order
+    const itemRegex = /<li[^>]*class="[^"]*search-product[^"]*"[^>]*>([\s\S]*?)<\/li>/g;
     let match;
 
     while ((match = itemRegex.exec(html)) !== null && items.length < 3) {
       const itemHtml = match[1];
 
-      const nameMatch = itemHtml.match(/<div class="name">([^<]+)<\/div>/);
-      const priceMatch = itemHtml.match(/<strong class="price-value">([^<]+)<\/strong>/);
-      // Fix: link regex — href comes before class in some cases, support both orders
+      const nameMatch = itemHtml.match(/<div[^>]*class="[^"]*name[^"]*"[^>]*>([^<]+)<\/div>/);
+      const priceMatch = itemHtml.match(/<strong[^>]*class="[^"]*price-value[^"]*"[^>]*>([^<]+)<\/strong>/);
       const linkMatch =
-        itemHtml.match(/<a[^>]*class="search-product-link"[^>]*href="([^"]+)"/) ||
-        itemHtml.match(/<a href="([^"]+)"[^>]*class="search-product-link"/);
+        itemHtml.match(/href="(\/vp\/products\/[^"]+)"/) ||
+        itemHtml.match(/href="(\/np\/search[^"]*)"/) ||
+        itemHtml.match(/class="search-product-link"[^>]*href="([^"]+)"/) ||
+        itemHtml.match(/href="([^"]+)"[^>]*class="search-product-link"/);
       const imgMatch =
-        itemHtml.match(/<img[^>]*class="search-product-wrap-img"[^>]*data-src="([^"]+)"/) ||
-        itemHtml.match(/<img[^>]*class="search-product-wrap-img"[^>]*src="([^"]+)"/);
+        itemHtml.match(/data-src="(https:\/\/[^"]+\.(?:jpg|jpeg|png|webp)[^"]*)"/) ||
+        itemHtml.match(/src="(https:\/\/thumbnail[^"]+)"/);
 
       if (nameMatch && priceMatch && linkMatch) {
         items.push({
           title: nameMatch[1].trim(),
           price: priceMatch[1].trim() + " ₩",
-          link: "https://www.coupang.com" + linkMatch[1],
-          image: imgMatch ? (imgMatch[1].startsWith("//") ? "https:" + imgMatch[1] : imgMatch[1]) : "",
+          link: linkMatch[1].startsWith("http")
+            ? linkMatch[1]
+            : "https://www.coupang.com" + linkMatch[1],
+          image: imgMatch ? imgMatch[1] : "",
         });
       }
     }
@@ -44,10 +48,8 @@ async function searchCoupang(keyword) {
   }
 }
 
-// Keywords that indicate a search/buy intent in Mongolian
 const SEARCH_TRIGGERS = ["хай", "байна уу", "авъя", "авах", "хайж", "олно уу", "хаяарай"];
 
-// Words to strip from the keyword to get the clean product query
 const STRIP_WORDS =
   /хайж\s*|хаяарай\s*|өгөөрэй\s*|өгөөч\s*|байна уу\s*|байна\s*|авъя\s*|авах\s*|олно уу\s*|уу\s*$/gi;
 
@@ -73,7 +75,6 @@ export default async function handler(req, res) {
           ).toLowerCase()
         : "";
 
-    // Determine if the user is asking to search/buy something
     let coupangContext = "";
     const hasSearchIntent = SEARCH_TRIGGERS.some((trigger) => userText.includes(trigger));
 
@@ -83,13 +84,13 @@ export default async function handler(req, res) {
       if (cleanKeyword.length > 1) {
         const products = await searchCoupang(cleanKeyword);
 
-        if (products && products.length) {
-          coupangContext = `\n\n[System Info: Found products on Coupang for "${cleanKeyword}". Show them with full clickable links.]\n`;
-          products.forEach((p, index) => {
-            coupangContext += `\n${index + 1}. ${p.title}\nPrice: ${p.price}\nLink: ${p.link}${p.image ? `\nImage: ${p.image}` : ""}\n`;
+        if (products?.length) {
+          coupangContext = `\n\n[System Info: "${cleanKeyword}" бүтээгдэхүүнийг Coupang-аас олов. Дараах бүтээгдэхүүнүүдийг бүрэн линктэй харуулна уу.]\n`;
+          products.forEach((p, i) => {
+            coupangContext += `\n${i + 1}. ${p.title}\nҮнэ: ${p.price}\nЛинк: ${p.link}${p.image ? `\nЗураг: ${p.image}` : ""}\n`;
           });
         } else {
-          coupangContext = `\n\n[System Info: No Coupang products found for "${cleanKeyword}".]`;
+          coupangContext = `\n\n[System Info: "${cleanKeyword}" бүтээгдэхүүн Coupang-аас олдсонгүй.]`;
         }
       }
     }
@@ -97,16 +98,11 @@ export default async function handler(req, res) {
     const finalSystemPrompt =
       (system || "") +
       coupangContext +
-      "\nIMPORTANT: Always display the full product URL as a plain clickable link.";
+      "\nЧУХАЛ: Бүтээгдэхүүний URL-ийг заавал бүтэн, дарагдах линк хэлбэрээр харуул.";
 
-    // Build messages for Groq: system first, then conversation (excluding any existing system messages)
     const conversationMessages = messages.filter((m) => m.role !== "system");
 
-    const groqMessages = [
-      { role: "system", content: finalSystemPrompt },
-      ...conversationMessages,
-    ];
-
+    // --- GROQ API call with proper error handling ---
     const groqResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -116,25 +112,39 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "llama-3.1-8b-instant",
         max_tokens: 1000,
-        messages: groqMessages,
+        messages: [
+          { role: "system", content: finalSystemPrompt },
+          ...conversationMessages,
+        ],
       }),
     });
 
+    // Parse error body safely
     if (!groqResponse.ok) {
-      const errBody = await groqResponse.text();
-      console.error("Groq API error:", groqResponse.status, errBody);
-      return res.status(502).json({ content: [{ type: "text", text: "Groq API алдаа гарлаа. Дахин оролдоно уу." }] });
+      let errMsg = `Groq алдаа: ${groqResponse.status}`;
+      try {
+        const errBody = await groqResponse.json();
+        errMsg = errBody?.error?.message || errMsg;
+      } catch {
+        errMsg = (await groqResponse.text().catch(() => "")) || errMsg;
+      }
+      console.error("Groq API error:", errMsg);
+      return res.status(502).json({
+        content: [{ type: "text", text: `Холболт шалгаад дахин оролдоно уу.\n(${errMsg})\n📞 +976 7211 8286` }],
+      });
     }
 
     const data = await groqResponse.json();
     const text =
-      data?.choices?.[0]?.message?.content?.trim() || "Уучлаарай, хариу авч чадсангүй.";
+      data?.choices?.[0]?.message?.content?.trim() ||
+      "Уучлаарай, хариу авч чадсангүй.";
 
     return res.status(200).json({ content: [{ type: "text", text }] });
+
   } catch (e) {
     console.error("Handler error:", e);
     return res.status(500).json({
-      content: [{ type: "text", text: "Серверт алдаа гарлаа. +976 7211 8286" }],
+      content: [{ type: "text", text: `Серверт алдаа гарлаа. 📞 +976 7211 8286\n(${e.message})` }],
     });
   }
 }
