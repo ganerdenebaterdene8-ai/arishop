@@ -1,56 +1,42 @@
-// Search products from Coupang
+```javascript
 async function searchCoupang(keyword) {
   try {
-    // Encode keyword for safe URL usage
     const encodedKeyword = encodeURIComponent(keyword);
-
-    // Build Coupang search URL
     const targetUrl = `https://www.coupang.com/np/search?q=${encodedKeyword}`;
 
-    // Get ScraperAPI key from environment variables
     const scraperApiKey = process.env.SCRAPERAPI_KEY;
-
-    // Use ScraperAPI as a proxy to access Coupang
     const proxyUrl = `https://api.scraperapi.com/?api_key=${scraperApiKey}&url=${encodeURIComponent(targetUrl)}`;
 
-    // Request HTML page
     const response = await fetch(proxyUrl);
 
     if (!response.ok) return null;
 
     const html = await response.text();
-    const items = [];
 
-    // Find product blocks in the HTML
+    const items = [];
     const itemRegex = /<li class="search-product"[^>]*>([\s\S]*?)<\/li>/g;
 
     let match;
 
-    // Extract up to 3 products
     while ((match = itemRegex.exec(html)) !== null && items.length < 3) {
       const itemHtml = match[1];
 
-      // Extract product name
       const nameMatch = itemHtml.match(
         /<div class="name">([^<]+)<\/div>/
       );
 
-      // Extract product price
       const priceMatch = itemHtml.match(
         /<strong class="price-value">([^<]+)<\/strong>/
       );
 
-      // Extract product link
       const linkMatch = itemHtml.match(
         /<a href="([^"]+)"[^>]*class="search-product-link"/
       );
 
-      // Extract product image
       const imgMatch = itemHtml.match(
         /<img[^>]*class="search-product-wrap-img"[^>]*src="([^"]+)"/
       );
 
-      // Add product if required fields exist
       if (nameMatch && priceMatch && linkMatch) {
         items.push({
           title: nameMatch[1].trim(),
@@ -61,7 +47,7 @@ async function searchCoupang(keyword) {
       }
     }
 
-    return items.length > 0 ? items : null;
+    return items.length ? items : null;
 
   } catch (error) {
     console.error("Error searching Coupang:", error);
@@ -69,106 +55,104 @@ async function searchCoupang(keyword) {
   }
 }
 
-// Main API handler
 export default async function handler(req, res) {
 
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  // Only allow POST requests
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(405).json({
-      error: 'Method not allowed'
+      error: "Method not allowed"
     });
   }
 
   try {
 
-    // Get request body data
-    const { messages, system } = req.body;
+    const { messages = [], system = "" } = req.body || {};
 
-    // Get the latest user message
+    if (!messages.length) {
+      return res.status(400).json({
+        error: "Messages are required"
+      });
+    }
+
     const userMessage =
-      messages[messages.length - 1].content.toLowerCase();
+      messages[messages.length - 1]?.content?.toLowerCase() || "";
 
     let coupangContext = "";
 
-    // Detect shopping-related Mongolian keywords
-    if (
-      userMessage.includes("хай") ||
-      userMessage.includes("байна уу") ||
-      userMessage.includes("авъя") ||
-      userMessage.includes("авах")
-    ) {
+    const searchPattern =
+      /(хай|хайж|хаяарай|өгөөрэй|өгөөч|авах|авъя|байна уу|олно уу|hai|haij|haij ogooch|avah|avya|awah|awya|bna uu|baina uu)/i;
 
-      // Remove common filler words from search query
+    if (searchPattern.test(userMessage)) {
+
       const cleanKeyword = userMessage
         .replace(
-          /хайж|хаяарай|өгөөрэй|өгөөч|байна уу|байна|авъя|авах|уу|олно уу/g,
+          /хайж|хай|хаяарай|өгөөрэй|өгөөч|байна уу|байна|авъя|авах|уу|олно уу|haij ogooch|haij|hai|baina uu|bna uu|avah|avya|awah|awya/gi,
           ""
         )
         .trim();
 
       if (cleanKeyword.length > 1) {
 
-        // Search products on Coupang
         const products = await searchCoupang(cleanKeyword);
 
-        if (products) {
+        if (products && products.length) {
 
-          // Add product information into system prompt
           coupangContext =
-            `\n\n[System Info: Found the following products on Coupang for "${cleanKeyword}". STRICT RULE: You MUST format product links as clickable Markdown links like [Product Name](URL). Do NOT output raw URLs. Include the price.]\n`;
+            `\n\n[System Info: Found products on Coupang for "${cleanKeyword}". Always show product name, price and clickable markdown link.]\n`;
 
           products.forEach((p, index) => {
-            coupangContext +=
-              `${index + 1}. [${p.title}](${p.link})\n` +
-              `Price: ${p.price}\n` +
-              `Image: ${p.image}\n\n`;
+            coupangContext += `
+${index + 1}. [${p.title}](${p.link})
+Price: ${p.price}
+Image: ${p.image}
+
+`;
           });
 
         } else {
 
-          // No products found
           coupangContext =
-            `\n\n[System Info: Sorry, no products found on Coupang for "${cleanKeyword}".]`;
+            `\n\n[System Info: No Coupang products found for "${cleanKeyword}".]`;
         }
       }
     }
 
-    // Add final instructions for Markdown links
     const finalSystemPrompt =
-      (system || '') +
+      system +
       coupangContext +
-      "\nCRITICAL: Always display product links as clickable Markdown [Product Title](URL). Never output raw URLs.";
+      `
+IMPORTANT:
+- If product information exists, show all products.
+- Keep markdown links clickable.
+- Never remove product URLs.
+- Show product name and price together.
+`;
 
-    // Build chat messages
     const allMessages = [
       {
-        role: 'system',
+        role: "system",
         content: finalSystemPrompt
       },
       ...messages
     ];
 
-    // Send request to Groq API
     const response = await fetch(
-      'https://api.groq.com/openai/v1/chat/completions',
+      "https://api.groq.com/openai/v1/chat/completions",
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: "llama-3.1-8b-instant",
           max_tokens: 1000,
           messages: allMessages
         })
@@ -177,16 +161,14 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Extract AI response
     const text =
-      data.choices?.[0]?.message?.content ||
-      'Sorry, an error occurred.';
+      data?.choices?.[0]?.message?.content ||
+      "Уучлаарай, мэдээлэл олдсонгүй.";
 
-    // Return response to client
     return res.status(200).json({
       content: [
         {
-          type: 'text',
+          type: "text",
           text
         }
       ]
@@ -196,14 +178,14 @@ export default async function handler(req, res) {
 
     console.error(error);
 
-    // Return server error
     return res.status(500).json({
       content: [
         {
-          type: 'text',
-          text: 'An error occurred. Please contact support: +976 7211 8286'
+          type: "text",
+          text: "Алдаа гарлаа. +976 7211 8286"
         }
       ]
     });
   }
 }
+```
