@@ -1,6 +1,3 @@
-// ─────────────────────────────────────────────
-//  Coupang шууд хайлт (ScraperAPI-гүй)
-// ─────────────────────────────────────────────
 async function searchCoupang(keyword) {
   try {
     const encodedKeyword = encodeURIComponent(keyword);
