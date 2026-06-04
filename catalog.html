@@ -275,18 +275,9 @@ async function cmsg(){
   m.appendChild(td);m.scrollTop=m.scrollHeight;
   try{
     const GROQ_KEY='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';
-    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-      body:JSON.stringify({model:'llama-3.1-8b-instant',max_tokens:1000,messages:[{role:'system',content:CSYS},...chist]})
-    });
-    const data=await r.json();
-    const reply=data.choices?.[0]?.message?.content||'Уучлаарай алдаа гарлаа. +976 7211 8286';
-    document.getElementById('ctd')?.remove();
-    cbot(reply);chist.push({role:'assistant',content:reply});
-  }catch(e){
-    document.getElementById('ctd')?.remove();
-    cbot('Холболт шалгаад дахин оролдоно уу.\n📞 +976 7211 8286');
+const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:CSYS,messages:chist})});
+const data=await r.json();
+const reply=data.content?.[0]?.text||'Уучлаарай алдаа гарлаа. +976 7211 8286';
   }
   cbusy=false;document.getElementById('csbtn').disabled=false;
 }
