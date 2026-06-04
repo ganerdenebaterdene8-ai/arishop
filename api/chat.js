@@ -10,14 +10,11 @@ async function searchCoupang(keyword) {
 
     const html = await response.text();
     const items = [];
-
-    // More flexible regex — handles attributes in any order
     const itemRegex = /<li[^>]*class="[^"]*search-product[^"]*"[^>]*>([\s\S]*?)<\/li>/g;
     let match;
 
     while ((match = itemRegex.exec(html)) !== null && items.length < 3) {
       const itemHtml = match[1];
-
       const nameMatch = itemHtml.match(/<div[^>]*class="[^"]*name[^"]*"[^>]*>([^<]+)<\/div>/);
       const priceMatch = itemHtml.match(/<strong[^>]*class="[^"]*price-value[^"]*"[^>]*>([^<]+)<\/strong>/);
       const linkMatch =
@@ -40,20 +37,17 @@ async function searchCoupang(keyword) {
         });
       }
     }
-
     return items.length > 0 ? items : null;
   } catch (error) {
-    console.error("Error searching Coupang:", error);
+    console.error("Coupang search error:", error);
     return null;
   }
 }
 
 const SEARCH_TRIGGERS = ["хай", "байна уу", "авъя", "авах", "хайж", "олно уу", "хаяарай"];
+const STRIP_WORDS = /хайж\s*|хаяарай\s*|өгөөрэй\s*|өгөөч\s*|байна уу\s*|байна\s*|авъя\s*|авах\s*|олно уу\s*|уу\s*$/gi;
 
-const STRIP_WORDS =
-  /хайж\s*|хаяарай\s*|өгөөрэй\s*|өгөөч\s*|байна уу\s*|байна\s*|авъя\s*|авах\s*|олно уу\s*|уу\s*$/gi;
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -63,7 +57,6 @@ export default async function handler(req, res) {
 
   try {
     const { messages = [], system = "" } = req.body || {};
-
     if (!messages.length) return res.status(400).json({ error: "Messages are required" });
 
     const lastUserMessage = messages[messages.length - 1];
@@ -80,12 +73,10 @@ export default async function handler(req, res) {
 
     if (hasSearchIntent) {
       const cleanKeyword = userText.replace(STRIP_WORDS, "").trim();
-
       if (cleanKeyword.length > 1) {
         const products = await searchCoupang(cleanKeyword);
-
         if (products?.length) {
-          coupangContext = `\n\n[System Info: "${cleanKeyword}" бүтээгдэхүүнийг Coupang-аас олов. Дараах бүтээгдэхүүнүүдийг бүрэн линктэй харуулна уу.]\n`;
+          coupangContext = `\n\n[System Info: "${cleanKeyword}" бүтээгдэхүүнийг Coupang-аас олов.]\n`;
           products.forEach((p, i) => {
             coupangContext += `\n${i + 1}. ${p.title}\nҮнэ: ${p.price}\nЛинк: ${p.link}${p.image ? `\nЗураг: ${p.image}` : ""}\n`;
           });
@@ -100,9 +91,6 @@ export default async function handler(req, res) {
       coupangContext +
       "\nЧУХАЛ: Бүтээгдэхүүний URL-ийг заавал бүтэн, дарагдах линк хэлбэрээр харуул.";
 
-    const conversationMessages = messages.filter((m) => m.role !== "system");
-
-    // --- GROQ API call with proper error handling ---
     const groqResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -114,12 +102,11 @@ export default async function handler(req, res) {
         max_tokens: 1000,
         messages: [
           { role: "system", content: finalSystemPrompt },
-          ...conversationMessages,
+          ...messages.filter((m) => m.role !== "system"),
         ],
       }),
     });
 
-    // Parse error body safely
     if (!groqResponse.ok) {
       let errMsg = `Groq алдаа: ${groqResponse.status}`;
       try {
@@ -128,23 +115,19 @@ export default async function handler(req, res) {
       } catch {
         errMsg = (await groqResponse.text().catch(() => "")) || errMsg;
       }
-      console.error("Groq API error:", errMsg);
       return res.status(502).json({
-        content: [{ type: "text", text: `Холболт шалгаад дахин оролдоно уу.\n(${errMsg})\n📞 +976 7211 8286` }],
+        content: [{ type: "text", text: `Холболт шалгаад дахин оролдоно уу.\n📞 +976 7211 8286` }],
       });
     }
 
     const data = await groqResponse.json();
-    const text =
-      data?.choices?.[0]?.message?.content?.trim() ||
-      "Уучлаарай, хариу авч чадсангүй.";
-
+    const text = data?.choices?.[0]?.message?.content?.trim() || "Уучлаарай, хариу авч чадсангүй.";
     return res.status(200).json({ content: [{ type: "text", text }] });
 
   } catch (e) {
     console.error("Handler error:", e);
     return res.status(500).json({
-      content: [{ type: "text", text: `Серверт алдаа гарлаа. 📞 +976 7211 8286\n(${e.message})` }],
+      content: [{ type: "text", text: `Серверт алдаа гарлаа. 📞 +976 7211 8286` }],
     });
   }
-}
+};
