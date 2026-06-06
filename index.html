@@ -306,7 +306,7 @@ function calculate(){
 
 // CHAT
 var GROQ_KEY = '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';
-var CSYS = 'Та АриШопын AI туслах чат. АриШоп нь Солонгосоос Монгол руу захиалга дамжуулдаг.\nУтас: +976 7211 8286\nХаан Банк: 5941051607 (Сүхбаатар Ариунтуяа)\nСтандарт хүргэлт: 7-14 хоног. Хурдан: 5-7 хоног (+20,000₮)\nҮйлчилгээний хураамж: 8%\nВон ханш: 1 вон = 2.7 төгрөг\nХЭРЭВ БАРАА АСУУВАЛ 3 Купангийн линк өгнө:\n1. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]&channel=user\n2. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+저렴한&channel=user\n3. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+베스트&channel=user\nМОНГОЛ→СОЛОНГОС: гутал=신발,нүүрний тос=얼굴크림,чихэвч=이어폰,лапша=라면,цүнх=가방,хувцас=의류\nМөнгө тооцохдоо тодорхой дүн хэл.';
+var CSYS = 'Та АриШопын туслах. Зөвхөн энгийн, зөв монгол хэлээр богино хариулна. Хэзээ ч монгол хэлний алдаатай буюу утгагүй үг ашиглахгүй.\nАриШоп: Солонгосоос Монгол руу захиалга дамжуулдаг.\nУтас: +976 7211 8286. Хаан Банк: 5941051607 (Сүхбаатар Ариунтуяа).\nХүргэлт: 7-14 хоног. Хураамж: 8%. Вон: 1₩=2.7₮.\nБАРАА ХАЙХАД: монгол үгийг солонгос руу орчуулж 3 Купанг линк өг:\n1. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]&channel=user\n2. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+저렴한&channel=user\n3. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+베스트&channel=user\нгутал=신발, чихэвч=이어폰, нүүрний тос=얼굴크림, лапша=라면, цүнх=가방\нМөнгө: "50,000 вон = 135,000 төгрөг" гэж тодорхой хэл.';
 var copen=false, cbusy=false, chist=[];
 
 function ctoggle(){
@@ -363,7 +363,7 @@ async function cmsg(){
         'Authorization':'Bearer '+GROQ_KEY
       },
       body:JSON.stringify({
-        model:'llama-3.1-8b-instant',
+        model:'llama-3.3-70b-versatile',
         max_tokens:1000,
         messages:[{role:'system',content:CSYS}].concat(chist)
       })
