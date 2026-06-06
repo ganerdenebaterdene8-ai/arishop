@@ -11,22 +11,21 @@
 html{scroll-behavior:smooth}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(9,9,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.logo{font-size:22px;font-weight:900;letter-spacing:-0.5px;color:var(--text)}.logo span{color:var(--red)}
+.logo{font-size:22px;font-weight:900;color:var(--text)}.logo span{color:var(--red)}
 .nav-links{display:flex;gap:36px;list-style:none}.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color 0.2s}.nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--red);color:white;padding:10px 24px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none;transition:opacity 0.2s}.nav-cta:hover{opacity:0.85}
+.nav-cta{background:var(--red);color:white;padding:10px 24px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none}
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:140px 60px 80px;position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 70% 50%,rgba(232,55,61,0.08) 0%,transparent 70%);pointer-events:none}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(232,55,61,0.12);border:1px solid rgba(232,55,61,0.25);color:var(--red);font-size:13px;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:32px;letter-spacing:0.5px}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(232,55,61,0.12);border:1px solid rgba(232,55,61,0.25);color:var(--red);font-size:13px;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:32px}
 .hero-tag::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
 .hero h1{font-size:clamp(52px,7vw,96px);font-weight:900;line-height:1.0;letter-spacing:-3px;max-width:900px;margin-bottom:28px}
-.hero h1 .accent{color:var(--red)}.hero h1 .gold{color:var(--gold)}
+.accent{color:var(--red)}.gold{color:var(--gold)}
 .hero-sub{font-size:18px;color:var(--muted);max-width:560px;margin-bottom:48px;line-height:1.7}
 .hero-actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .btn-primary{background:var(--red);color:white;padding:16px 36px;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer}
 .btn-primary:hover{background:#cf2f34;transform:translateY(-1px)}
-.btn-secondary{color:var(--text);border:1px solid var(--border);padding:16px 36px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;transition:all 0.2s;background:transparent}
-.btn-secondary:hover{border-color:rgba(255,255,255,0.2);background:var(--bg2)}
+.btn-secondary{color:var(--text);border:1px solid var(--border);padding:16px 36px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;background:transparent}
 .hero-stats{display:flex;gap:48px;margin-top:80px;padding-top:48px;border-top:1px solid var(--border);flex-wrap:wrap}
 .stat-num{font-size:36px;font-weight:900;letter-spacing:-1px}.stat-num span{color:var(--red)}
 .stat-label{font-size:13px;color:var(--muted);margin-top:4px}
@@ -36,75 +35,69 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .section-sub{font-size:17px;color:var(--muted);max-width:560px;margin-bottom:60px}
 .platforms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .platform-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px 28px;transition:all 0.3s;position:relative;overflow:hidden}
-.platform-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% -10%,rgba(232,55,61,0.06) 0%,transparent 70%);opacity:0;transition:opacity 0.3s}
-.platform-card:hover{border-color:rgba(232,55,61,0.3);transform:translateY(-4px)}.platform-card:hover::before{opacity:1}
+.platform-card:hover{border-color:rgba(232,55,61,0.3);transform:translateY(-4px)}
 .platform-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;font-weight:900}
 .platform-name{font-size:20px;font-weight:700;margin-bottom:8px}
 .platform-desc{font-size:14px;color:var(--muted);line-height:1.6}
-.platform-badge{display:inline-block;margin-top:16px;background:rgba(245,166,35,0.12);color:var(--gold);border:1px solid rgba(245,166,35,0.2);font-size:11px;font-weight:700;letter-spacing:0.5px;padding:4px 10px;border-radius:100px}
+.platform-badge{display:inline-block;margin-top:16px;background:rgba(245,166,35,0.12);color:var(--gold);border:1px solid rgba(245,166,35,0.2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
 .hiw-bg{background:var(--bg2)}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;position:relative}
-.steps::before{content:'';position:absolute;top:44px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--border) 20%,var(--border) 80%,transparent)}
-.step{padding:40px 32px;text-align:center;position:relative}
-.step-num{width:52px;height:52px;border-radius:14px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;margin:0 auto 24px;background:var(--bg);position:relative;z-index:1;color:var(--red)}
+.step{padding:40px 32px;text-align:center}
+.step-num{width:52px;height:52px;border-radius:14px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;margin:0 auto 24px;background:var(--bg);color:var(--red)}
 .step-title{font-size:18px;font-weight:700;margin-bottom:12px}.step-desc{font-size:14px;color:var(--muted);line-height:1.7}
 .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 .calc-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px}
 .calc-box h3{font-size:22px;font-weight:700;margin-bottom:28px}
 .calc-row{margin-bottom:20px}
 .calc-label{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500}
-.calc-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s}
-.calc-input:focus{border-color:rgba(232,55,61,0.5)}
+.calc-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Outfit',sans-serif;outline:none}
 .calc-select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Outfit',sans-serif;outline:none;cursor:pointer}
 .calc-result{background:rgba(232,55,61,0.08);border:1px solid rgba(232,55,61,0.2);border-radius:12px;padding:24px;margin-top:24px}
 .calc-result-label{font-size:13px;color:var(--muted);margin-bottom:6px}
 .calc-result-num{font-size:36px;font-weight:900;letter-spacing:-1px;color:var(--red)}
 .calc-result-sub{font-size:13px;color:var(--muted);margin-top:6px}
 .calc-btn{width:100%;background:var(--red);color:white;border:none;padding:16px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;font-family:'Outfit',sans-serif}
-.calc-btn:hover{background:#cf2f34}
-.calc-info{padding:20px 0}
 .calc-info h2{font-size:40px;font-weight:900;letter-spacing:-1.5px;margin-bottom:20px}
 .calc-info p{color:var(--muted);font-size:16px;margin-bottom:32px;line-height:1.7}
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px 28px;transition:border-color 0.2s}
-.feature-card:hover{border-color:rgba(255,255,255,0.15)}
+.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px 28px}
 .feature-icon{width:44px;height:44px;border-radius:12px;background:rgba(232,55,61,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:20px}
 .feature-title{font-size:17px;font-weight:700;margin-bottom:10px}.feature-desc{font-size:14px;color:var(--muted);line-height:1.7}
 .cta-section{margin:0 60px 100px;border-radius:24px;background:var(--bg2);border:1px solid var(--border);padding:80px;text-align:center;position:relative;overflow:hidden}
-.cta-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:200px;background:radial-gradient(ellipse,rgba(232,55,61,0.15) 0%,transparent 70%);pointer-events:none}
-.cta-section h2{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-1.5px;margin-bottom:20px;position:relative}
-.cta-section p{font-size:17px;color:var(--muted);max-width:500px;margin:0 auto 40px;line-height:1.7;position:relative}
+.cta-section h2{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-1.5px;margin-bottom:20px}
+.cta-section p{font-size:17px;color:var(--muted);max-width:500px;margin:0 auto 40px;line-height:1.7}
 footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px}
 .footer-logo{font-size:20px;font-weight:900}.footer-logo span{color:var(--red)}
 .footer-text{font-size:13px;color:var(--muted)}
 .footer-links{display:flex;flex-direction:column;gap:12px}
 .footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s}.footer-links a:hover{color:var(--text)}
-.chat-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:#E8373D;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 20px rgba(232,55,61,0.5);transition:all .2s;z-index:9999}
+/* CHAT */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 20px rgba(232,55,61,0.5);transition:all .2s;z-index:9999}
 .chat-fab:hover{transform:scale(1.1)}
-.chat-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#16a34a;border-radius:50%;border:2px solid #09090F;animation:cpulse 2s infinite}
+.chat-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#16a34a;border-radius:50%;border:2px solid var(--bg);animation:cpulse 2s infinite}
 @keyframes cpulse{0%,100%{opacity:1}50%{opacity:.4}}
-.chat-win{position:fixed;bottom:90px;right:24px;width:360px;height:520px;background:#13131C;border:1px solid rgba(255,255,255,0.08);border-radius:20px;display:flex;flex-direction:column;z-index:9998;box-shadow:0 20px 60px rgba(0,0,0,0.5);transform:scale(0.8) translateY(20px);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.chat-win{position:fixed;bottom:90px;right:24px;width:360px;height:520px;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:20px;display:flex;flex-direction:column;z-index:9998;box-shadow:0 20px 60px rgba(0,0,0,0.5);transform:scale(0.8) translateY(20px);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 .chat-win.copen{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}
-.chead{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;border-radius:20px 20px 0 0;background:#09090F}
-.cavatar{width:40px;height:40px;border-radius:50%;background:#E8373D;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:white;flex-shrink:0}
+.chead{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;border-radius:20px 20px 0 0;background:var(--bg)}
+.cavatar{width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:white;flex-shrink:0}
 .cmsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-.cmsgs::-webkit-scrollbar{width:3px}.cmsgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
-.cmsg{max-width:80%;display:flex;flex-direction:column;gap:3px}.cmsg.bot{align-self:flex-start}.cmsg.user{align-self:flex-end}
+.cmsg{max-width:80%;display:flex;flex-direction:column;gap:3px}
+.cmsg.bot{align-self:flex-start}.cmsg.user{align-self:flex-end}
 .cbub{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5;font-family:'Outfit',sans-serif}
-.cmsg.bot .cbub{background:#1A1A26;color:#F0EEE9;border-radius:4px 16px 16px 16px}
-.cmsg.user .cbub{background:#E8373D;color:white;border-radius:16px 16px 4px 16px}
-.ctime{font-size:10px;color:#888899;padding:0 4px}.cmsg.user .ctime{text-align:right}
+.cmsg.bot .cbub{background:var(--bg3);color:var(--text);border-radius:4px 16px 16px 16px}
+.cmsg.user .cbub{background:var(--red);color:white;border-radius:16px 16px 4px 16px}
+.ctime{font-size:10px;color:var(--muted);padding:0 4px}.cmsg.user .ctime{text-align:right}
 .cqr{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
-.cqbtn{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#888899;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
-.cqbtn:hover{border-color:rgba(232,55,61,.4);color:#F0EEE9}
-.ctyping{display:flex;align-items:center;gap:4px;padding:10px 14px;background:#1A1A26;border-radius:4px 16px 16px 16px;align-self:flex-start;width:fit-content}
-.ctyping span{width:6px;height:6px;background:#888899;border-radius:50%;animation:cbounce .8s infinite}
+.cqbtn{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
+.cqbtn:hover{border-color:rgba(232,55,61,.4);color:var(--text)}
+.ctyping{display:flex;align-items:center;gap:4px;padding:10px 14px;background:var(--bg3);border-radius:4px 16px 16px 16px;align-self:flex-start}
+.ctyping span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:cbounce .8s infinite}
 .ctyping span:nth-child(2){animation-delay:.15s}.ctyping span:nth-child(3){animation-delay:.3s}
 @keyframes cbounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 .cinput{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:8px;align-items:flex-end}
-.cinp{flex:1;background:#1A1A26;border:1px solid rgba(255,255,255,0.08);color:#F0EEE9;padding:10px 14px;border-radius:12px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;resize:none;max-height:80px}
-.cinp:focus{border-color:rgba(232,55,61,.5)}.cinp::placeholder{color:#888899}
-.csbtn{width:38px;height:38px;background:#E8373D;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;color:white}
+.cinp{flex:1;background:var(--bg3);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;resize:none;max-height:80px}
+.cinp:focus{border-color:rgba(232,55,61,.5)}.cinp::placeholder{color:var(--muted)}
+.csbtn{width:38px;height:38px;background:var(--red);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;color:white}
 .csbtn:disabled{background:#333;cursor:not-allowed}
 @media(max-width:900px){nav{padding:16px 24px}.nav-links{display:none}.mobile-catalog{display:flex !important}.hero{padding:120px 24px 60px}.section{padding:72px 24px}.calc-grid{grid-template-columns:1fr;gap:40px}.features-grid{grid-template-columns:1fr}.cta-section{margin:0 24px 80px;padding:52px 28px}footer{padding:36px 24px;flex-direction:column}.hero-stats{gap:32px}}
 @media(max-width:480px){.chat-win{right:12px;left:12px;width:auto}.chat-fab{bottom:16px;right:16px}}
@@ -162,22 +155,22 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
   <h2 class="section-title">Хаанаас ч захиалъя</h2>
   <p class="section-sub">Солонгосын хамгийн том, найдвартай дэлгүүрүүдтэй шууд ажилладаг.</p>
   <div class="platforms-grid">
-    <div class="platform-card"><div class="platform-icon" style="background:rgba(255,64,64,0.12);color:#FF4040">쿠</div><div class="platform-name">Coupang</div><div class="platform-desc">Солонгосын хамгийн том онлайн дэлгүүр. Хоол хүнс, электроник, гоо сайхан — бүх зүйл нэг дороос.</div><div class="platform-badge">Хамгийн их захиалагддаг</div></div>
-    <div class="platform-card"><div class="platform-icon" style="background:rgba(0,200,100,0.12);color:#00C864">N</div><div class="platform-name">Naver Smart Store</div><div class="platform-desc">Дотоодын брэндүүд, гар урлал, тусгай бүтээгдэхүүн олдох хамгийн баялаг платформ.</div><div class="platform-badge">50,000+ худалдагч</div></div>
-    <div class="platform-card"><div class="platform-icon" style="background:rgba(0,120,255,0.12);color:#0078FF">G</div><div class="platform-name">Gmarket & Auction</div><div class="platform-desc">Дуусгавар, урамшуулал, хямдрал — хамгийн сайн үнэ олохыг хүсвэл зөв газар.</div><div class="platform-badge">Хямдралтай бараа</div></div>
-    <div class="platform-card"><div class="platform-icon" style="background:rgba(245,166,35,0.12);color:var(--gold)">+</div><div class="platform-name">Бусад дэлгүүрүүд</div><div class="platform-desc">Musinsa, Olive Young, 11Street болон бусад 1,000 гаруй солонгос дэлгүүрийн URL-аас захиалж болно.</div><div class="platform-badge">URL-аар захиалах</div></div>
+    <div class="platform-card"><div class="platform-icon" style="background:rgba(255,64,64,0.12);color:#FF4040">쿠</div><div class="platform-name">Coupang</div><div class="platform-desc">Солонгосын хамгийн том онлайн дэлгүүр.</div><div class="platform-badge">Хамгийн их захиалагддаг</div></div>
+    <div class="platform-card"><div class="platform-icon" style="background:rgba(0,200,100,0.12);color:#00C864">N</div><div class="platform-name">Naver Smart Store</div><div class="platform-desc">Дотоодын брэндүүд, тусгай бүтээгдэхүүн.</div><div class="platform-badge">50,000+ худалдагч</div></div>
+    <div class="platform-card"><div class="platform-icon" style="background:rgba(0,120,255,0.12);color:#0078FF">G</div><div class="platform-name">Gmarket & Auction</div><div class="platform-desc">Хямдрал, урамшуулал — хамгийн сайн үнэ.</div><div class="platform-badge">Хямдралтай бараа</div></div>
+    <div class="platform-card"><div class="platform-icon" style="background:rgba(245,166,35,0.12);color:var(--gold)">+</div><div class="platform-name">Бусад дэлгүүрүүд</div><div class="platform-desc">Musinsa, Olive Young болон 1,000+ дэлгүүр.</div><div class="platform-badge">URL-аар захиалах</div></div>
   </div>
 </section>
 
 <section class="section hiw-bg" id="how">
   <p class="section-tag" style="text-align:center">Процесс</p>
   <h2 class="section-title" style="text-align:center;margin:0 auto 12px">4 алхмаар захиалж авна</h2>
-  <p class="section-sub" style="text-align:center;margin:0 auto 60px">Солонгосоор мэдэхгүй ч асуудалгүй — бид бүх зүйлийг шийдэнэ.</p>
+  <p class="section-sub" style="text-align:center;margin:0 auto 60px">Солонгосоор мэдэхгүй ч асуудалгүй.</p>
   <div class="steps">
-    <div class="step"><div class="step-num">01</div><div class="step-title">URL хуулж илгээ</div><div class="step-desc">Сонирхсон бараагаа олоод линкийг маань илгээ.</div></div>
-    <div class="step"><div class="step-num">02</div><div class="step-title">Үнэ тооцоолно</div><div class="step-desc">Барааны үнэ + тээвэр + хүргэлт нэмсэн нийт зардлыг мэдэгдэнэ.</div></div>
-    <div class="step"><div class="step-num">03</div><div class="step-title">Төлбөр хийнэ</div><div class="step-desc">QPay эсвэл банкны шилжүүлгээр төлнө.</div></div>
-    <div class="step"><div class="step-num">04</div><div class="step-title">Гэртээ хүлээн аваарай</div><div class="step-desc">7–14 хоногийн дотор Монголд хүргэнэ.</div></div>
+    <div class="step"><div class="step-num">01</div><div class="step-title">URL хуулж илгээ</div><div class="step-desc">Сонирхсон бараагаа олоод линкийг илгээ.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Үнэ тооцоолно</div><div class="step-desc">Нийт зардлыг мэдэгдэнэ.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Төлбөр хийнэ</div><div class="step-desc">QPay эсвэл банкны шилжүүлгээр.</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Гэртээ хүлээн аваарай</div><div class="step-desc">7–14 хоногийн дотор хүргэнэ.</div></div>
   </div>
 </section>
 
@@ -186,12 +179,12 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
     <div class="calc-info">
       <p class="section-tag">Тооцоолуур</p>
       <h2>Хэдэн төгрөг болох вэ?</h2>
-      <p>Барааны үнэ болон жинг оруулахад нийт зардлыг шууд харуулна. Далд хураамж байхгүй.</p>
+      <p>Барааны үнэ болон жинг оруулахад нийт зардлыг шууд харуулна.</p>
     </div>
     <div class="calc-box">
       <h3>Үнийн тооцоолуур</h3>
-      <div class="calc-row"><div class="calc-label">Барааны үнэ (₩)</div><input type="number" class="calc-input" id="price" placeholder="50,000" value="50000"></div>
-      <div class="calc-row"><div class="calc-label">Барааны жин (гр)</div><input type="number" class="calc-input" id="weight" placeholder="500" value="500"></div>
+      <div class="calc-row"><div class="calc-label">Барааны үнэ (₩)</div><input type="number" class="calc-input" id="price" value="50000"></div>
+      <div class="calc-row"><div class="calc-label">Барааны жин (гр)</div><input type="number" class="calc-input" id="weight" value="500"></div>
       <div class="calc-row"><div class="calc-label">Хүргэлтийн төрөл</div><select class="calc-select" id="delivery"><option value="standard">Стандарт (7–14 хоног)</option><option value="express">Хурдан (5–7 хоног)</option></select></div>
       <button class="calc-btn" onclick="calculate()">Тооцоолох</button>
       <div class="calc-result"><div class="calc-result-label">Нийт зардал (₮)</div><div class="calc-result-num" id="result">—</div><div class="calc-result-sub" id="result-detail">Тооцоолох товч дарна уу</div></div>
@@ -202,21 +195,20 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
 <section class="section" id="features">
   <p class="section-tag">Давуу тал</p>
   <h2 class="section-title">Яагаад АРИ ШОП?</h2>
-  <p class="section-sub">Бид зөвхөн захиалагч биш — таны итгэмжлэгдсэн солонгос дэлгүүрийн төлөөлөгч.</p>
+  <p class="section-sub">Бид таны итгэмжлэгдсэн солонгос дэлгүүрийн төлөөлөгч.</p>
   <div class="features-grid">
-    <div class="feature-card"><div class="feature-icon">🛡</div><div class="feature-title">100% найдвартай</div><div class="feature-desc">Бараа ирсний дараа л баталгаажуулна. Захиалга алдагдах, муу чанарын бараа хүргэвэл бүрэн буцааж өгнө.</div></div>
-    <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-title">Трекинг системтэй</div><div class="feature-desc">Таны бараа Солонгосоос гарснаасаа Монголд хүрэх хүртэл бодит цагийн мөрдөлтийн системтэй.</div></div>
-    <div class="feature-card"><div class="feature-icon">💬</div><div class="feature-title">Монгол хэлний дэмжлэг</div><div class="feature-desc">Солонгос хэл мэдэхгүй ч асуудалгүй. Бид орчуулж, тайлбарлаж туслана.</div></div>
-    <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Хурдан хүргэлт</div><div class="feature-desc">Экспресс хүргэлтийн хувьд 5–7 хоногт Улаанбаатарт хүрдэг.</div></div>
-    <div class="feature-card"><div class="feature-icon">💎</div><div class="feature-title">Онцгой бараа</div><div class="feature-desc">Монголд зарагддаггүй K-Beauty, K-Fashion болон тусгай бараанууд.</div></div>
-    <div class="feature-card"><div class="feature-icon">📱</div><div class="feature-title">Захиалга хялбар</div><div class="feature-desc">URL-аа хуулж илгээхэд л хангалттай. Хаанаас ч захиалж болно.</div></div>
+    <div class="feature-card"><div class="feature-icon">🛡</div><div class="feature-title">100% найдвартай</div><div class="feature-desc">Бараа ирсний дараа л баталгаажуулна.</div></div>
+    <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-title">Трекинг системтэй</div><div class="feature-desc">Бараа хаана байгааг мөрдөх боломжтой.</div></div>
+    <div class="feature-card"><div class="feature-icon">💬</div><div class="feature-title">Монгол хэлний дэмжлэг</div><div class="feature-desc">Солонгос хэл мэдэхгүй ч асуудалгүй.</div></div>
+    <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Хурдан хүргэлт</div><div class="feature-desc">Экспресс 5–7 хоног, стандарт 7–14 хоног.</div></div>
+    <div class="feature-card"><div class="feature-icon">💎</div><div class="feature-title">Онцгой бараа</div><div class="feature-desc">Монголд зарагддаггүй K-Beauty, K-Fashion.</div></div>
+    <div class="feature-card"><div class="feature-icon">📱</div><div class="feature-title">Захиалга хялбар</div><div class="feature-desc">URL-аа хуулж илгээхэд л хангалттай.</div></div>
   </div>
 </section>
 
-<div class="cta-section" id="start">
-  <div class="cta-glow"></div>
+<div class="cta-section">
   <h2>Өнөөдрөөс эхлэ</h2>
-  <p>Солонгосын дэлгүүрт байгаа бараагаа одоо захиал. Эхний захиалгад тээврийн 10% хөнгөлөлт авна.</p>
+  <p>Солонгосын дэлгүүрт байгаа бараагаа одоо захиал.</p>
   <a href="order.html" class="btn-primary" style="font-size:16px;padding:18px 48px;display:inline-block">Захиалга өгөх →</a>
 </div>
 
@@ -232,9 +224,9 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
   <div>
     <div class="footer-text" style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Дансны мэдээлэл</div>
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
-      <div style="display:flex;justify-content:space-between;gap:24px;font-size:13px"><span style="color:var(--muted)">Банк:</span><span style="font-weight:600">Хаан Банк</span></div>
-      <div style="display:flex;justify-content:space-between;gap:24px;font-size:13px"><span style="color:var(--muted)">Дугаар:</span><span style="font-weight:700;color:var(--gold)">5941051607</span></div>
-      <div style="display:flex;justify-content:space-between;gap:24px;font-size:13px"><span style="color:var(--muted)">Нэр:</span><span style="font-weight:600">Сүхбаатар Ариунтуяа</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--muted)">Банк:</span><span style="font-weight:600">Хаан Банк</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--muted)">Дугаар:</span><span style="font-weight:700;color:var(--gold)">5941051607</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--muted)">Нэр:</span><span style="font-weight:600">Сүхбаатар Ариунтуяа</span></div>
     </div>
   </div>
   <div>
@@ -247,6 +239,7 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
   </div>
 </footer>
 
+<!-- CHAT -->
 <button class="chat-fab" onclick="ctoggle()" id="cfab">💬<div class="chat-badge"></div></button>
 <div class="chat-win" id="cwin">
   <div class="chead">
@@ -259,7 +252,7 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
     <button class="cqbtn" onclick="csend('Хүргэлт хэдэн хоног вэ?')">📦 Хүргэлт</button>
     <button class="cqbtn" onclick="csend('Яаж захиалах вэ?')">🛒 Захиалах</button>
     <button class="cqbtn" onclick="csend('Төлбөр яаж хийх вэ?')">💳 Төлбөр</button>
-    <button class="cqbtn" onclick="csend('Үнийн тооцоо яаж хийдэг вэ?')">💰 Үнэ</button>
+    <button class="cqbtn" onclick="csend('Үнийн тооцоо?')">💰 Үнэ</button>
   </div>
   <div class="cinput">
     <textarea class="cinp" id="cinp" placeholder="Асуух зүйлээ бичнэ үү..." rows="1"
@@ -271,7 +264,7 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
 
 <script>
 // PRODUCTS
-const HP=[
+var HP=[
   {id:1,name:'Laneige Уруулын маск',price:18000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=300&fit=crop',badge:'Бестселлер'},
   {id:2,name:'Samsung Galaxy Buds2 Pro',price:159000,plat:'coupang',cat:'tech',img:'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=300&h=300&fit=crop'},
   {id:3,name:'COSRX Хясаа тос 100мл',price:22000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300&h=300&fit=crop',badge:'-15%'},
@@ -279,104 +272,121 @@ const HP=[
   {id:5,name:'Шинрамён 5 ширхэг',price:8500,plat:'coupang',cat:'food',img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop',badge:'Шинэ'},
   {id:6,name:'AirPods Pro 2',price:329000,plat:'coupang',cat:'tech',img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=300&h=300&fit=crop'},
   {id:7,name:'Adidas Samba OG',price:109000,plat:'naver',cat:'fashion',img:'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=300&h=300&fit=crop'},
-  {id:8,name:'Витамин С сэрүм',price:28000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=300&fit=crop',badge:'-20%'},
+  {id:8,name:'Витамин С сэрүм',price:28000,plat:'naver',cat:'beauty',img:'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=300&fit=crop',badge:'-20%'}
 ];
-const PC2={coupang:'#FF4040',naver:'#00C864',gmarket:'#4A9FFF'};
-const PN2={coupang:'쿠팡',naver:'Naver',gmarket:'Gmarket'};
-let homeCat='all';
+var PC2={coupang:'#FF4040',naver:'#00C864',gmarket:'#4A9FFF'};
+var PN2={coupang:'쿠팡',naver:'Naver',gmarket:'Gmarket'};
+var homeCat='all';
 function filterHome(btn,cat){
-  document.querySelectorAll('.hcat').forEach(b=>{b.style.background='transparent';b.style.color='#888899';b.style.borderColor='rgba(255,255,255,0.07)'});
+  document.querySelectorAll('.hcat').forEach(function(b){b.style.background='transparent';b.style.color='#888899';b.style.borderColor='rgba(255,255,255,0.07)';});
   btn.style.background='#E8373D';btn.style.color='white';btn.style.borderColor='rgba(232,55,61,0.5)';
   homeCat=cat;renderHome();
 }
 function renderHome(){
-  const list=homeCat==='all'?HP:HP.filter(p=>p.cat===homeCat);
-  document.getElementById('homeGrid').innerHTML=list.map(p=>`
-    <div onclick="location.href='order.html?title=${encodeURIComponent(p.name)}&price=${p.price}&platform=${p.plat}'"
-      style="background:#13131C;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s"
-      onmouseover="this.style.borderColor='rgba(232,55,61,0.3)';this.style.transform='translateY(-3px)'"
-      onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.transform='translateY(0)'">
-      <div style="position:relative;padding-top:100%;background:#1A1A26">
-        <img src="${p.img}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/300x300/1A1A26/555?text=📦'">
-        <div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px;background:${PC2[p.plat]}22;color:${PC2[p.plat]};border:1px solid ${PC2[p.plat]}44">${PN2[p.plat]}</div>
-        ${p.badge?`<div style="position:absolute;top:8px;right:8px;background:#E8373D;color:white;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px">${p.badge}</div>`:''}
-      </div>
-      <div style="padding:12px">
-        <div style="font-size:12px;color:#F0EEE9;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.name}</div>
-        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
-          <span style="font-size:14px;font-weight:700">₩${p.price.toLocaleString()}</span>
-          <span style="font-size:11px;color:#F5A623">≈${Math.round(p.price*2.7).toLocaleString()}₮</span>
-        </div>
-        <button onclick="event.stopPropagation();location.href='order.html?title=${encodeURIComponent(p.name)}&price=${p.price}&platform=${p.plat}'"
-          style="width:100%;background:#E8373D;color:white;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif">
-          Захиалах →
-        </button>
-      </div>
-    </div>`).join('');
+  var list=homeCat==='all'?HP:HP.filter(function(p){return p.cat===homeCat;});
+  document.getElementById('homeGrid').innerHTML=list.map(function(p){
+    return '<div onclick="location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'" style="background:#13131C;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s" onmouseover="this.style.borderColor=\'rgba(232,55,61,0.3)\';this.style.transform=\'translateY(-3px)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.07)\';this.style.transform=\'translateY(0)\'"><div style="position:relative;padding-top:100%;background:#1A1A26"><img src="'+p.img+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://via.placeholder.com/300x300/1A1A26/555?text=📦\'"><div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px;background:'+PC2[p.plat]+'22;color:'+PC2[p.plat]+';border:1px solid '+PC2[p.plat]+'44">'+PN2[p.plat]+'</div>'+(p.badge?'<div style="position:absolute;top:8px;right:8px;background:#E8373D;color:white;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px">'+p.badge+'</div>':'')+'</div><div style="padding:12px"><div style="font-size:12px;color:#F0EEE9;line-height:1.4;margin-bottom:6px">'+p.name+'</div><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px"><span style="font-size:14px;font-weight:700">₩'+p.price.toLocaleString()+'</span><span style="font-size:11px;color:#F5A623">≈'+Math.round(p.price*2.7).toLocaleString()+'₮</span></div><button onclick="event.stopPropagation();location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'" style="width:100%;background:#E8373D;color:white;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Outfit\',sans-serif">Захиалах →</button></div></div>';
+  }).join('');
 }
 renderHome();
 
 // CALCULATOR
 function calculate(){
-  const price=parseFloat(document.getElementById('price').value)||0;
-  const weight=parseFloat(document.getElementById('weight').value)||0;
-  const delivery=document.getElementById('delivery').value;
-  const WON_TO_MNT=2.7;
-  const ratePerGram=delivery==='express'?8.5:5.5;
-  const priceInMNT=price*WON_TO_MNT;
-  const shippingMNT=weight*ratePerGram;
-  const serviceMNT=priceInMNT*0.08;
-  const total=Math.round(priceInMNT+shippingMNT+serviceMNT);
+  var price=parseFloat(document.getElementById('price').value)||0;
+  var weight=parseFloat(document.getElementById('weight').value)||0;
+  var delivery=document.getElementById('delivery').value;
+  var ratePerGram=delivery==='express'?8.5:5.5;
+  var priceInMNT=price*2.7;
+  var shippingMNT=weight*ratePerGram;
+  var serviceMNT=priceInMNT*0.08;
+  var total=Math.round(priceInMNT+shippingMNT+serviceMNT);
   document.getElementById('result').textContent=total.toLocaleString('mn-MN')+' ₮';
-  document.getElementById('result-detail').textContent=`Бараа: ${Math.round(priceInMNT).toLocaleString()} + Тээвэр: ${Math.round(shippingMNT).toLocaleString()} + Хураамж: ${Math.round(serviceMNT).toLocaleString()} ₮`;
+  document.getElementById('result-detail').textContent='Бараа: '+Math.round(priceInMNT).toLocaleString()+' + Тээвэр: '+Math.round(shippingMNT).toLocaleString()+' + Хураамж: '+Math.round(serviceMNT).toLocaleString()+' ₮';
 }
 
 // CHAT
-const CSYS=`Та АриШопын AI туслах чат. АриШоп нь Солонгосоос Монгол руу захиалга дамжуулдаг.
-Үндсэн мэдээлэл:
-- Вэбсайт: arishop-ruddy.vercel.app
-- Утас: +976 7211 8286
-- Хаан Банк: 5941051607 (Сүхбаатар Ариунтуяа)
-- Стандарт хүргэлт: 7-14 хоног. Хурдан: 5-7 хоног (+20,000₮)
-- Үйлчилгээний хураамж: 8%
-- Төлбөр: QPay эсвэл Хаан Банк
-- Вон ханш: 1 вон = 2.7 төгрөг
-ХЭРЭВ ХЭРЭГЛЭГЧ БАРАА АСУУВАЛ 3 Купангийн линк өгнө:
-🛍 [бараа] Купангаас хайлаа:
-1️⃣ https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]&channel=user
-2️⃣ https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+저렴한&channel=user
-3️⃣ https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+베스트&channel=user
-👉 Линк дарж бараа сонгоод URL-ийг order.html-д оруулж захиалаарай!
-МОНГОЛ→СОЛОНГОС: гутал=신발,нүүрний тос=얼굴크림,чихэвч=이어폰,лапша=라면,цүнх=가방,хувцас=의류,витамин=비타민,женьшень=홍삼
-Мөнгө тооцохдоо тодорхой дүн хэл: "50,000 вон нь 135,000 төгрөг болно"`;
-let copen=false,cbusy=false,chist=[];
-function ctoggle(){copen=!copen;document.getElementById('cwin').classList.toggle('copen',copen);document.getElementById('cfab').innerHTML=copen?'✕':'💬<div class="chat-badge"></div>';if(copen&&!chist.length)setTimeout(()=>cbot('Сайн байна уу! 👋 АриШопт тавтай морилно уу.\nСолонгосоос бараа захиалах талаар асуух зүйл байвал туслахад бэлэн!'),400);}
-function cbot(t){const m=document.getElementById('cmsgs'),d=document.createElement('div');d.className='cmsg bot';const tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="cbub">${t.replace(/\n/g,'<br>')}</div><div class="ctime">${tm}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
-function cuser(t){const m=document.getElementById('cmsgs'),d=document.createElement('div');d.className='cmsg user';const tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="cbub">${t}</div><div class="ctime">${tm}</div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+var GROQ_KEY = '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';
+var CSYS = 'Та АриШопын AI туслах чат. АриШоп нь Солонгосоос Монгол руу захиалга дамжуулдаг.\nУтас: +976 7211 8286\nХаан Банк: 5941051607 (Сүхбаатар Ариунтуяа)\nСтандарт хүргэлт: 7-14 хоног. Хурдан: 5-7 хоног (+20,000₮)\nҮйлчилгээний хураамж: 8%\nВон ханш: 1 вон = 2.7 төгрөг\nХЭРЭВ БАРАА АСУУВАЛ 3 Купангийн линк өгнө:\n1. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]&channel=user\n2. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+저렴한&channel=user\n3. https://www.coupang.com/np/search?q=[СОЛОНГОС_ҮГ]+베스트&channel=user\nМОНГОЛ→СОЛОНГОС: гутал=신발,нүүрний тос=얼굴크림,чихэвч=이어폰,лапша=라면,цүнх=가방,хувцас=의류\nМөнгө тооцохдоо тодорхой дүн хэл.';
+var copen=false, cbusy=false, chist=[];
+
+function ctoggle(){
+  copen=!copen;
+  document.getElementById('cwin').classList.toggle('copen',copen);
+  document.getElementById('cfab').innerHTML=copen?'✕':'💬<div class="chat-badge"></div>';
+  if(copen&&!chist.length){
+    setTimeout(function(){cbot('Сайн байна уу! 👋 АриШопт тавтай морилно уу.\nСолонгосоос бараа захиалах талаар асуух зүйл байвал туслахад бэлэн!');},400);
+  }
+}
+
+function cbot(t){
+  var m=document.getElementById('cmsgs');
+  var d=document.createElement('div');
+  d.className='cmsg bot';
+  var tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});
+  d.innerHTML='<div class="cbub">'+t.replace(/\n/g,'<br>')+'</div><div class="ctime">'+tm+'</div>';
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+}
+
+function cuser(t){
+  var m=document.getElementById('cmsgs');
+  var d=document.createElement('div');
+  d.className='cmsg user';
+  var tm=new Date().toLocaleTimeString('mn-MN',{hour:'2-digit',minute:'2-digit'});
+  d.innerHTML='<div class="cbub">'+t+'</div><div class="ctime">'+tm+'</div>';
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+}
+
 async function cmsg(){
-  const inp=document.getElementById('cinp'),t=inp.value.trim();
+  var inp=document.getElementById('cinp');
+  var t=inp.value.trim();
   if(!t||cbusy)return;
-  inp.value='';inp.style.height='auto';
-  cuser(t);chist.push({role:'user',content:t});
+  inp.value='';
+  inp.style.height='auto';
+  cuser(t);
+  chist.push({role:'user',content:t});
   document.getElementById('csbtn').disabled=true;
   document.getElementById('cqr').style.display='none';
   cbusy=true;
-  const m=document.getElementById('cmsgs'),td=document.createElement('div');
-td.id='ctd';td.innerHTML='<div class="ctyping"><span></span><span></span><span></span></div>';
-  m.appendChild(td);m.scrollTop=m.scrollHeight;
+  var m=document.getElementById('cmsgs');
+  var td=document.createElement('div');
+  td.id='ctd';
+  td.innerHTML='<div class="ctyping"><span></span><span></span><span></span></div>';
+  m.appendChild(td);
+  m.scrollTop=m.scrollHeight;
   try{
-    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer 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'},body:JSON.stringify({model:'llama-3.1-8b-instant',max_tokens:1000,messages:[{role:'system',content:CSYS},...chist]})});
-    const data=await r.json();
-    const reply=data.choices?.[0]?.message?.content||'Уучлаарай алдаа гарлаа. +976 7211 8286';
-    document.getElementById('ctd')?.remove();
-    cbot(reply);chist.push({role:'assistant',content:reply});
+    var response=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+GROQ_KEY
+      },
+      body:JSON.stringify({
+        model:'llama-3.1-8b-instant',
+        max_tokens:1000,
+        messages:[{role:'system',content:CSYS}].concat(chist)
+      })
+    });
+    var data=await response.json();
+    var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'Уучлаарай алдаа гарлаа. +976 7211 8286';
+    var ctdEl=document.getElementById('ctd');
+    if(ctdEl)ctdEl.remove();
+    cbot(reply);
+    chist.push({role:'assistant',content:reply});
   }catch(e){
-    document.getElementById('ctd')?.remove();
+    var ctdEl=document.getElementById('ctd');
+    if(ctdEl)ctdEl.remove();
     cbot('Холболт шалгаад дахин оролдоно уу.\n📞 +976 7211 8286');
   }
-  cbusy=false;document.getElementById('csbtn').disabled=false;
+  cbusy=false;
+  document.getElementById('csbtn').disabled=false;
 }
-function csend(t){document.getElementById('cinp').value=t;cmsg();}
+
+function csend(t){
+  document.getElementById('cinp').value=t;
+  cmsg();
+}
 </script>
 </body>
 </html>
