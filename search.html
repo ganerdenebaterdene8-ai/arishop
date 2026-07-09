@@ -3,85 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>АриШоп — Монголоор хайх</title>
+<title>АриШоп — Бараа хайх</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --red:#E8373D; --gold:#F5A623; --green:#16a34a;
-  --bg:#09090F; --bg2:#13131C; --bg3:#1A1A26;
-  --text:#F0EEE9; --muted:#888899; --border:rgba(255,255,255,0.07);
-}
+:root{--red:#E8373D;--gold:#F5A623;--bg:#09090F;--bg2:#13131C;--bg3:#1A1A26;--text:#F0EEE9;--muted:#888899;--border:rgba(255,255,255,0.07)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(9,9,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.logo{font-size:20px;font-weight:900;text-decoration:none;color:var(--text)}.logo span{color:var(--red)}
+.nav-links{display:flex;gap:28px;list-style:none}.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.order-btn{background:var(--red);color:white;padding:9px 20px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none}
 
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;
-  background:rgba(9,9,15,0.9);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
-.logo{font-size:20px;font-weight:900;text-decoration:none;color:var(--text)}
-.logo span{color:var(--red)}
-.nav-links{display:flex;gap:24px;list-style:none}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
-.nav-links a:hover,.nav-links a.active{color:var(--text)}
-.order-btn{background:var(--red);color:white;padding:9px 20px;border-radius:8px;
-  font-weight:700;font-size:14px;text-decoration:none}
-
-/* HERO SEARCH */
-.hero{padding:60px 40px 40px;text-align:center}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;
-  background:rgba(232,55,61,0.1);border:1px solid rgba(232,55,61,0.25);
-  color:var(--red);font-size:12px;font-weight:700;padding:5px 14px;
-  border-radius:100px;margin-bottom:20px;letter-spacing:0.5px}
-.hero h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
-.hero p{font-size:16px;color:var(--muted);margin-bottom:36px}
-
-/* SEARCH BOX */
-.search-box{max-width:680px;margin:0 auto}
-.search-main{display:flex;gap:10px;margin-bottom:16px}
-.search-inp-wrap{flex:1;position:relative}
-.search-inp{width:100%;background:var(--bg2);border:2px solid var(--border);
-  color:var(--text);padding:18px 20px 18px 52px;border-radius:14px;
-  font-size:17px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
-.search-inp:focus{border-color:rgba(232,55,61,0.5)}
-.search-inp::placeholder{color:var(--muted)}
-.search-ico{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:18px}
-.search-go{background:var(--red);color:white;padding:18px 28px;border-radius:14px;
-  border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;
-  transition:all .2s;white-space:nowrap}
-.search-go:hover{background:#cf2f34;transform:translateY(-1px)}
-.search-go:disabled{background:#333;cursor:not-allowed;transform:none}
+/* SEARCH HERO */
+.search-hero{padding:48px 40px 32px;background:linear-gradient(180deg,rgba(232,55,61,0.05) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.search-hero h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+.search-hero h1 span{color:var(--red)}
+.search-hero p{color:var(--muted);font-size:14px;margin-bottom:24px}
+.search-bar{display:flex;gap:10px;max-width:700px}
+.search-wrap{flex:1;position:relative}
+.search-ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--muted)}
+.search-input{width:100%;background:var(--bg2);border:2px solid rgba(232,55,61,0.3);color:var(--text);padding:14px 16px 14px 48px;border-radius:12px;font-size:16px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:rgba(232,55,61,0.7)}
+.search-input::placeholder{color:var(--muted)}
+.search-btn{background:var(--red);color:white;padding:14px 28px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;transition:background .2s}
+.search-btn:hover{background:#cf2f34}
 
 /* SUGGESTIONS */
-.suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
-.sug{padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;
-  border:1px solid var(--border);background:transparent;color:var(--muted);
-  cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
-.sug:hover{border-color:rgba(232,55,61,.4);color:var(--text);background:rgba(232,55,61,.06)}
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.sug{padding:6px 14px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
+.sug:hover{border-color:rgba(232,55,61,.4);color:var(--text)}
 
-/* TRANSLATE RESULT */
-.translate-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;
-  padding:20px 24px;margin-bottom:24px;display:none;text-align:left}
-.translate-box.show{display:block}
-.tr-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);
-  text-transform:uppercase;margin-bottom:10px}
-.tr-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.tr-from{font-size:16px;font-weight:600;color:var(--text)}
-.tr-arrow{color:var(--muted);font-size:14px}
-.tr-to{font-size:18px;font-weight:700;color:var(--gold)}
-.tr-note{font-size:12px;color:var(--muted);margin-top:8px}
-.coupang-link{display:inline-flex;align-items:center;gap:6px;margin-top:12px;
-  background:rgba(255,64,64,0.1);border:1px solid rgba(255,64,64,0.25);
-  color:#FF6060;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;
-  text-decoration:none;transition:all .2s}
-.coupang-link:hover{background:rgba(255,64,64,0.2)}
+/* RESULTS AREA */
+.results-area{padding:32px 40px}
+.results-header{margin-bottom:24px}
+.results-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.results-title span{color:var(--red)}
+.results-sub{font-size:14px;color:var(--muted)}
+.kr-word{display:inline-block;background:rgba(232,55,61,0.1);color:var(--red);border:1px solid rgba(232,55,61,0.25);padding:3px 10px;border-radius:100px;font-size:13px;font-weight:700;margin-left:8px}
 
-/* LOADING */
-.loading{text-align:center;padding:60px 20px;display:none}
-.loading.show{display:block}
-.spinner{width:40px;height:40px;border:3px solid var(--border);
-  border-top-color:var(--red);border-radius:50%;animation:spin 0.8s linear infinite;
-  margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:var(--muted);font-size:15px}
+/* PRODUCT GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;cursor:pointer}
+.card:hover{border-color:rgba(232,55,61,.3);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.card-img{position:relative;padding-top:100%;background:var(--bg3);overflow:hidden}
+.card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.card:hover .card-img img{transform:scale(1.05)}
+.card-badge{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px}
+.card-body{padding:14px}
+.card-name{font-size:13px;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--text)}
+.card-price{font-size:16px;font-weight:700;margin-bottom:3px}
+.card-mnt{font-size:12px;color:var(--gold);margin-bottom:10px}
+.card-btns{display:flex;gap:8px}
+.btn-order{flex:1;background:var(--red);color:white;border:none;padding:10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .2s}
+.btn-order:hover{background:#cf2f34}
+.btn-coupang{flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:4px}
+.btn-coupang:hover{border-color:rgba(255,64,64,0.4);color:#FF6060}
 
-/* RESULTS */
-.results-section{max-width:1100px;margin:0 auto;padding:0 40
+/* COUPANG SECTION */
+.coupang-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:32px}
+.coupang-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.coupang-logo{font-size:24px;font-weight:900;color:#FF4040}
+.coupang-title{font-size:18px;font-weight:700}
+.coupang-sub{font-size:13px;color:var(--muted);margin-top:2px}
+.coupang-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.coupang-link-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;transition:all .2s;display:block}
+.coupang-link-card:hover{border-color:rgba(255,64,64,0.3);transform:translateY(-2px)}
+.clink-num{font-size:11px;font-weight:700;color:var(--red);margin-bottom:6px;letter-spacing:1px}
+.clink-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.clink-desc{font-size:12px;color:var(--muted)}
+.clink-arrow{color:var(--red);font-size:16px;margin-top:8px;display:block}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:80px 20px;display:none}
+.empty.show{display:block}
+.empty-icon{font-size:56px;margin-bottom:16px}
+.empty h3{font-size:22px;font-weight:700;margin-bottom:8px}
+.empty p{color:var(--muted);margin-bottom:24px}
+
+/* INITIAL STATE */
+.initial{text-align:center;padding:80px 20px}
+.initial-icon{font-size:56px;margin-bottom:16px}
+.initial h3{font-size:20px;font-weight:700;margin-bottom:8px}
+.initial p{color:var(--muted);font-size:15px}
+
+@media(max-width:768px){
+  nav{padding:14px 16px}.nav-links{display:none}
+  .search-hero{padding:32px 16px 24px}.search-bar{flex-direction:column}
+  .search-btn{width:100%}.results-area{padding:24px 16px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .card-btns{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">АРИ<span>ШОП</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Нүүр</a></li>
+    <li><a href="catalog.html">Бараа</a></li>
+    <li><a href="search.html" class="active">Хайлт</a></li>
+    <li><a href="order.html">Захиалах</a></li>
+  </ul>
+  <a href="order.html" class="order-btn">Захиалга өгөх</a>
+</nav>
+
+<div class="search-hero">
+  <h1>Солонгосын бараа <span>хайх</span></h1>
+  <p>Монголоор бичихэд АриШоп автоматаар солонгос хэл рүү орчуулж хайна</p>
+  <div class="search-bar">
+    <div class="search-wrap">
+      <span class="search-ico">🔍</span>
+      <input type="text" class="search-input" id="searchInput"
+        placeholder="Монголоор бичнэ үү... жш: чихэвч, нүүрний тос, гутал"
+        onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <button class="search-btn" onclick="doSearch()">Хайх →</button>
+  </div>
+  <div class="suggestions">
+    <button class="sug" onclick="quickSearch('чихэвч')">🎧 чихэвч</button>
+    <button class="sug" onclick="quickSearch('нүүрний тос')">💄 нүүрний тос</button>
+    <button class="sug" onclick="quickSearch('гутал')">👟 гутал</button>
+    <button class="sug" onclick="quickSearch('лапша')">🍜 лапша</button>
+    <button class="sug" onclick="quickSearch('цүнх')">👜 цүнх</button>
+    <button class="sug" onclick="quickSearch('хүүхдийн тоглоом')">🧸 тоглоом</button>
+    <button class="sug" onclick="quickSearch('витамин')">💊 витамин</button>
+    <button class="sug" onclick="quickSearch('кофе')">☕ кофе</button>
+  </div>
+</div>
+
+<div class="results-area" id="resultsArea">
+  <div class="initial" id="initialState">
+    <div class="initial-icon">🛍️</div>
+    <h3>Юу хайж байна вэ?</h3>
+    <p>Дээрх хайлтын талбарт монголоор бичнэ үү</p>
+  </div>
+  <div class="empty" id="emptyState">
+    <div class="empty-icon">🔍</div>
+    <h3>Бараа олдсонгүй</h3>
+    <p>Өөр үгээр хайж үзэх эсвэл URL-аар шууд захиалах боломжтой</p>
+    <a href="order.html" style="display:inline-block;background:var(--red);color:white;padding:12px 28px;border-radius:10px;font-weight:700;text-decoration:none">URL-аар захиалах →</a>
+  </div>
+  <div id="resultsContent" style="display:none">
+    <div class="results-header">
+      <div class="results-title">"<span id="searchWordDisplay"></span>" <span id="krWordDisplay"></span></div>
+      <div class="results-sub" id="resultsSub"></div>
+    </div>
+    <!-- АриШопын каталогийн бараанууд -->
+    <div id="catalogSection" style="display:none">
+      <div style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+        <span style="background:rgba(232,55,61,0.1);color:var(--red);padding:4px 12px;border-radius:100px;font-size:12px">АриШопын бараанууд</span>
+      </div>
+      <div class="grid" id="catalogGrid"></div>
+    </div>
+    <!-- Купангийн хайлтын линкүүд -->
+    <div class="coupang-section" id="coupangSection">
+      <div class="coupang-header">
+        <div class="coupang-logo">쿠팡</div>
+        <div>
+          <div class="coupang-title">Купангаас хайх</div>
+          <div class="coupang-sub">Дараах линкүүдийг дарж Купанг дээрх бараануудыг харна уу</div>
+        </div>
+      </div>
+      <div class="coupang-links" id="coupangLinks"></div>
+    </div>
+    <!-- Захиалгын заавар -->
+    <div style="background:rgba(232,55,61,0.06);border:1px solid rgba(232,55,61,0.15);border-radius:12px;padding:20px;display:flex;align-items:flex-start;gap:14px">
+      <div style="font-size:24px">💡</div>
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Купангаас бараа сонгосон уу?</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6">Барааны URL-г хуулаад <a href="order.html" style="color:var(--red);font-weight:600">захиалгын форм</a> руу оруулна уу. Бид Солонгосоос захиалж Монголд хүргэнэ!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var DICT = {
+  'чихэвч':'이어폰', 'наушник':'이어폰', 'bluetooth чихэвч':'블루투스이어폰', 'утасгүй чихэвч':'무선이어폰',
+  'гутал':'신발', 'спорт гутал':'운동화', 'бут гутал':'부츠', 'дэвсгэр гутал':'슬리퍼',
+  'нүүрний тос':'얼굴크림', 'арьс засах':'스킨케어', 'крем':'크림', 'тонер':'토너',
+  'маск':'마스크팩', 'нүүрний маск':'마스크팩', 'маскпак':'마스크팩', 'сэрүм':'세럼',
+  'уруулын будаг':'립스틱', 'нүдний будаг':'아이섀도우', 'пудра':'파우더',
+  'шампунь':'샴푸', 'үс засах':'헤어케어', 'үсний тос':'헤어오일',
+  'лапша':'라면', 'рамён':'라면', 'шинрамён':'신라면', 'кофе':'커피',
+  'чоколад':'초콜릿', 'жигнэмэг':'과자', 'чихэр':'사탕', 'жимс':'과일',
+  'цүнх':'가방', 'нуруун цүнх':'백팩', 'гардан цүнх':'핸드백', 'дамны цүнх':'크로스백',
+  'хувцас':'의류', 'цамц':'티셔츠', 'өмд':'바지', 'пальто':'코트', 'жакет':'자켓',
+  'хүүхдийн хувцас':'아동복', 'эмэгтэй хувцас':'여성복', 'эрэгтэй хувцас':'남성복',
+  'утас':'스마트폰', 'гар утас':'핸드폰', 'цэнэгтэй':'충전기', 'кабель':'케이블',
+  'тоглоом':'장난감', 'хүүхдийн тоглоом':'어린이장난감', 'лего':'레고', 'пазл':'퍼즐',
+  'витамин':'비타민', 'женьшень':'홍삼', 'эрүүл мэнд':'건강식품', 'омега':'오메가3',
+  'тоос сорогч':'청소기', 'хөргөгч':'냉장고', 'угаалгын машин':'세탁기',
+  'дэлгэц':'모니터', 'чихэвч компьютер':'헤드폰', 'гарын хавтан':'키보드',
+  'ном':'책', 'дэвтэр':'노트북', 'үзэг':'펜', 'харандаа':'연필'
+};
+
+var CATALOG = [
+  {id:1,name:'Laneige Уруулын маск',price:18000,cat:'beauty',img:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=300&fit=crop',badge:'Бестселлер',kr:'마스크팩'},
+  {id:2,name:'Samsung Galaxy Buds2 Pro',price:159000,cat:'tech',img:'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=300&h=300&fit=crop',kr:'이어폰'},
+  {id:3,name:'COSRX Хясаа нүүрний тос',price:22000,cat:'beauty',img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300&h=300&fit=crop',badge:'-15%',kr:'얼굴크림'},
+  {id:4,name:'Nike Air Force 1',price:119000,cat:'fashion',img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop',kr:'신발'},
+  {id:5,name:'Шинрамён лапша 5 ширхэг',price:8500,cat:'food',img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=300&fit=crop',badge:'Шинэ',kr:'라면'},
+  {id:6,name:'AirPods Pro 2',price:329000,cat:'tech',img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=300&h=300&fit=crop',kr:'이어폰'},
+  {id:7,name:'Adidas Samba OG',price:109000,cat:'fashion',img:'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=300&h=300&fit=crop',kr:'신발'},
+  {id:8,name:'Витамин С сэрүм',price:28000,cat:'beauty',img:'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=300&fit=crop',badge:'-20%',kr:'세럼'},
+  {id:9,name:'Ногоон цайны маск 10ш',price:12000,cat:'beauty',img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=300&fit=crop',kr:'마스크팩'},
+  {id:10,name:'Nike нуруун цүнх',price:79000,cat:'fashion',img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop',kr:'가방'},
+  {id:11,name:'Улаан женьшень тэжээл',price:65000,cat:'health',img:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=300&fit=crop',kr:'홍삼'},
+  {id:12,name:'Лего Техник 42154',price:89000,cat:'kids',img:'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=300&h=300&fit=crop',kr:'레고'},
+];
+
+function translate(q) {
+  var lower = q.toLowerCase().trim();
+  for (var mn in DICT) {
+    if (lower.includes(mn)) return {mn: mn, kr: DICT[mn]};
+  }
+  return null;
+}
+
+function doSearch() {
+  var q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  document.getElementById('initialState').style.display = 'none';
+  document.getElementById('emptyState').classList.remove('show');
+  var found = translate(q);
+  if (!found) {
+    document.getElementById('resultsContent').style.display = 'none';
+    document.getElementById('emptyState').classList.add('show');
+    return;
+  }
+  showResults(q, found.mn, found.kr);
+}
+
+function showResults(query, mn, kr) {
+  document.getElementById('resultsContent').style.display = 'block';
+  document.getElementById('searchWordDisplay').textContent = query;
+  document.getElementById('krWordDisplay').innerHTML = '<span class="kr-word">' + kr + '</span>';
+  // Каталогийн тохирох бараанууд
+  var matching = CATALOG.filter(function(p) { return p.kr === kr; });
+  var catSection = document.getElementById('catalogSection');
+  var catGrid = document.getElementById('catalogGrid');
+  if (matching.length > 0) {
+    catSection.style.display = 'block';
+    catGrid.innerHTML = matching.map(function(p) {
+      return '<div class="card">' +
+        '<div class="card-img"><img src="' + p.img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/300x300/1A1A26/555?text=📦\'">' +
+        (p.badge ? '<div class="card-badge" style="background:var(--red);color:white">' + p.badge + '</div>' : '') +
+        '</div>' +
+        '<div class="card-body">' +
+        '<div class="card-name">' + p.name + '</div>' +
+        '<div class="card-price">₩' + p.price.toLocaleString() + '</div>' +
+        '<div class="card-mnt">≈ ' + Math.round(p.price * 2.7).toLocaleString() + '₮</div>' +
+        '<div class="card-btns">' +
+        '<button class="btn-order" onclick="location.href=\'order.html?title=' + encodeURIComponent(p.name) + '&price=' + p.price + '\'">АриШопоор захиалах</button>' +
+        '</div></div></div>';
+    }).join('');
+    document.getElementById('resultsSub').textContent = 'АриШопын каталогоос ' + matching.length + ' бараа + Купангийн хайлтын линкүүд';
+  } else {
+    catSection.style.display = 'none';
+    document.getElementById('resultsSub').textContent = 'Купангийн хайлтын линкүүд';
+  }
+  // Купангийн линкүүд
+  var links = [
+    {num:'01', title:'Бүх ' + mn + ' бараанууд', desc:'Хамгийн их захиалагддаг', url:'https://www.coupang.com/np/search?q=' + encodeURIComponent(kr) + '&channel=user'},
+    {num:'02', title:'Хямд ' + mn, desc:'Үнэ багаар эрэмбэлэгдсэн', url:'https://www.coupang.com/np/search?q=' + encodeURIComponent(kr) + '+저렴한&channel=user'},
+    {num:'03', title:'Шилдэг ' + mn, desc:'Өндөр үнэлгэлттэй бараанууд', url:'https://www.coupang.com/np/search?q=' + encodeURIComponent(kr) + '+베스트&channel=user'},
+    {num:'04', title:'Шинэ ' + mn, desc:'Хамгийн сүүлийн бараанууд', url:'https://www.coupang.com/np/search?q=' + encodeURIComponent(kr) + '+신상&channel=user'},
+  ];
+  document.getElementById('coupangLinks').innerHTML = links.map(function(l) {
+    return '<a href="' + l.url + '" target="_blank" class="coupang-link-card">' +
+      '<div class="clink-num">ЛИНК ' + l.num + '</div>' +
+      '<div class="clink-title">' + l.title + '</div>' +
+      '<div class="clink-desc">' + l.desc + '</div>' +
+      '<span class="clink-arrow">↗ Купанг дээр харах</span>' +
+      '</a>';
+  }).join('');
+}
+
+function quickSearch(q) {
+  document.getElementById('searchInput').value = q;
+  doSearch();
+}
+
+// URL-аас хайлтын параметр уншигч
+window.onload = function() {
+  var params = new URLSearchParams(window.location.search);
+  var q = params.get('q');
+  if (q) {
+    document.getElementById('searchInput').value = q;
+    doSearch();
+  }
+};
+</script>
+</body>
+</html>
