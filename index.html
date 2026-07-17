@@ -4,42 +4,70 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>АРИ ШОП — Солонгосоос Монголд</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Yeseva+One&display=swap" rel="stylesheet">
 <style>
-:root{--red:#E8373D;--gold:#F5A623;--bg:#09090F;--bg2:#13131C;--bg3:#1A1A26;--text:#F0EEE9;--muted:#888899;--border:rgba(255,255,255,0.07)}
+:root{--red:#E85D5D;--gold:#2FB380;--bg:#FFF6EE;--bg2:#FFEBDB;--bg3:#FFDDC7;--text:#2B1810;--muted:#8A7263;--border:rgba(43,24,16,0.07);--heading:'Yeseva One',Georgia,serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(9,9,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.logo{font-size:22px;font-weight:900;color:var(--text)}.logo span{color:var(--red)}
+body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(255,246,238,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--heading);font-weight:400;font-size:24px;color:var(--text)}.logo span{color:var(--red)}
 .nav-links{display:flex;gap:36px;list-style:none}.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color 0.2s}.nav-links a:hover{color:var(--text)}
 .nav-cta{background:var(--red);color:white;padding:10px 24px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none}
+.nav-search-wrap{position:relative;flex:1;max-width:420px;margin:0 8px}
+.nav-search{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:9px 16px}
+.nav-search svg{flex-shrink:0;color:var(--muted)}
+.nav-search input{flex:1;min-width:0;border:none;background:transparent;outline:none;font-family:'Figtree',sans-serif;font-size:14px;color:var(--text)}
+.nav-search input::placeholder{color:var(--muted)}
+.nav-search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg);border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 32px rgba(43,24,16,0.14);overflow:hidden;z-index:200;display:none}
+.nav-search-dropdown.open{display:block}
+.nsd-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--border);text-decoration:none;color:inherit}
+.nsd-item:last-child{border-bottom:none}
+.nsd-item:hover{background:var(--bg2)}
+.nsd-thumb{width:38px;height:38px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-family:var(--heading);font-size:16px;color:var(--red);flex-shrink:0}
+.nsd-name{font-size:13px;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.nsd-price{font-family:var(--heading);font-size:14px;color:var(--red);white-space:nowrap}
+.nsd-empty{padding:16px;text-align:center;font-size:13px;color:var(--muted)}
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:140px 60px 80px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 70% 50%,rgba(232,55,61,0.08) 0%,transparent 70%);pointer-events:none}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(232,55,61,0.12);border:1px solid rgba(232,55,61,0.25);color:var(--red);font-size:13px;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:32px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 70% 50%,rgba(232,93,93,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(232,93,93,0.12);border:1px solid rgba(232,93,93,0.25);color:var(--red);font-size:13px;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:32px}
 .hero-tag::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
-.hero h1{font-size:clamp(52px,7vw,96px);font-weight:900;line-height:1.0;letter-spacing:-3px;max-width:900px;margin-bottom:28px}
+.hero h1{font-family:var(--heading);font-size:clamp(48px,6.4vw,88px);font-weight:400;line-height:1.05;letter-spacing:0;max-width:900px;margin-bottom:28px}
 .accent{color:var(--red)}.gold{color:var(--gold)}
 .hero-sub{font-size:18px;color:var(--muted);max-width:560px;margin-bottom:48px;line-height:1.7}
 .hero-actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .btn-primary{background:var(--red);color:white;padding:16px 36px;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer}
-.btn-primary:hover{background:#cf2f34;transform:translateY(-1px)}
+.btn-primary:hover{background:#D14545;transform:translateY(-1px)}
 .btn-secondary{color:var(--text);border:1px solid var(--border);padding:16px 36px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;background:transparent}
 .hero-stats{display:flex;gap:48px;margin-top:80px;padding-top:48px;border-top:1px solid var(--border);flex-wrap:wrap}
 .stat-num{font-size:36px;font-weight:900;letter-spacing:-1px}.stat-num span{color:var(--red)}
 .stat-label{font-size:13px;color:var(--muted);margin-top:4px}
+.promo-carousel{margin:64px 60px 0;border-radius:24px;overflow:hidden;position:relative}
+.promo-track{display:flex;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
+.promo-slide{min-width:100%;box-sizing:border-box;padding:40px 56px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:150px}
+.promo-slide .promo-tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.promo-slide h3{font-family:var(--heading);font-weight:400;font-size:28px;line-height:1.2;margin:8px 0 0}
+.promo-slide p{font-size:14px;color:var(--muted);max-width:44ch;margin:8px 0 0}
+.promo-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.promo-dots{position:absolute;bottom:16px;left:56px;display:flex;gap:6px}
+.promo-dots button{width:10px;height:6px;border-radius:999px;border:none;cursor:pointer;padding:0;transition:all .3s ease}
+.trust-strip{margin:20px 60px 0;background:var(--bg2);border-radius:20px;padding:24px 32px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.trust-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
+.trust-item svg{flex-shrink:0;color:var(--red)}
 .section{padding:100px 60px}
 .section-tag{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:16px}
-.section-title{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px}
+.section-title{font-family:var(--heading);font-size:clamp(30px,3.6vw,46px);font-weight:400;letter-spacing:0;line-height:1.15;margin-bottom:16px}
 .section-sub{font-size:17px;color:var(--muted);max-width:560px;margin-bottom:60px}
 .platforms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .platform-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px 28px;transition:all 0.3s;position:relative;overflow:hidden}
-.platform-card:hover{border-color:rgba(232,55,61,0.3);transform:translateY(-4px)}
+.platform-card:hover{border-color:rgba(232,93,93,0.3);transform:translateY(-4px)}
 .platform-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;font-weight:900}
-.platform-name{font-size:20px;font-weight:700;margin-bottom:8px}
+.platform-name{font-family:var(--heading);font-weight:400;font-size:21px;margin-bottom:8px}
 .platform-desc{font-size:14px;color:var(--muted);line-height:1.6}
-.platform-badge{display:inline-block;margin-top:16px;background:rgba(245,166,35,0.12);color:var(--gold);border:1px solid rgba(245,166,35,0.2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
+.platform-badge{display:inline-block;margin-top:16px;background:rgba(47,179,128,0.12);color:var(--gold);border:1px solid rgba(47,179,128,0.2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
 .hiw-bg{background:var(--bg2)}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;position:relative}
 .step{padding:40px 32px;text-align:center}
@@ -47,65 +75,72 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .step-title{font-size:18px;font-weight:700;margin-bottom:12px}.step-desc{font-size:14px;color:var(--muted);line-height:1.7}
 .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 .calc-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px}
-.calc-box h3{font-size:22px;font-weight:700;margin-bottom:28px}
+.calc-box h3{font-family:var(--heading);font-weight:400;font-size:22px;margin-bottom:28px}
 .calc-row{margin-bottom:20px}
 .calc-label{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500}
-.calc-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Outfit',sans-serif;outline:none}
-.calc-select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Outfit',sans-serif;outline:none;cursor:pointer}
-.calc-result{background:rgba(232,55,61,0.08);border:1px solid rgba(232,55,61,0.2);border-radius:12px;padding:24px;margin-top:24px}
+.calc-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Figtree',sans-serif;outline:none}
+.calc-select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:10px;font-size:15px;font-family:'Figtree',sans-serif;outline:none;cursor:pointer}
+.calc-result{background:rgba(232,93,93,0.08);border:1px solid rgba(232,93,93,0.2);border-radius:12px;padding:24px;margin-top:24px}
 .calc-result-label{font-size:13px;color:var(--muted);margin-bottom:6px}
 .calc-result-num{font-size:36px;font-weight:900;letter-spacing:-1px;color:var(--red)}
 .calc-result-sub{font-size:13px;color:var(--muted);margin-top:6px}
-.calc-btn{width:100%;background:var(--red);color:white;border:none;padding:16px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;font-family:'Outfit',sans-serif}
-.calc-info h2{font-size:40px;font-weight:900;letter-spacing:-1.5px;margin-bottom:20px}
+.calc-btn{width:100%;background:var(--red);color:white;border:none;padding:16px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;font-family:'Figtree',sans-serif}
+.calc-info h2{font-family:var(--heading);font-weight:400;font-size:36px;letter-spacing:0;margin-bottom:20px}
 .calc-info p{color:var(--muted);font-size:16px;margin-bottom:32px;line-height:1.7}
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px 28px}
-.feature-icon{width:44px;height:44px;border-radius:12px;background:rgba(232,55,61,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:20px}
+.feature-icon{width:44px;height:44px;border-radius:12px;background:rgba(232,93,93,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:20px}
 .feature-title{font-size:17px;font-weight:700;margin-bottom:10px}.feature-desc{font-size:14px;color:var(--muted);line-height:1.7}
 .cta-section{margin:0 60px 100px;border-radius:24px;background:var(--bg2);border:1px solid var(--border);padding:80px;text-align:center;position:relative;overflow:hidden}
-.cta-section h2{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-1.5px;margin-bottom:20px}
+.cta-section h2{font-family:var(--heading);font-weight:400;font-size:clamp(30px,3.6vw,46px);letter-spacing:0;margin-bottom:20px}
 .cta-section p{font-size:17px;color:var(--muted);max-width:500px;margin:0 auto 40px;line-height:1.7}
 footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px}
-.footer-logo{font-size:20px;font-weight:900}.footer-logo span{color:var(--red)}
+.footer-logo{font-family:var(--heading);font-weight:400;font-size:22px}.footer-logo span{color:var(--red)}
 .footer-text{font-size:13px;color:var(--muted)}
 .footer-links{display:flex;flex-direction:column;gap:12px}
 .footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s}.footer-links a:hover{color:var(--text)}
 /* CHAT */
-.chat-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 20px rgba(232,55,61,0.5);transition:all .2s;z-index:9999}
+.chat-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 20px rgba(232,93,93,0.5);transition:all .2s;z-index:9999}
 .chat-fab:hover{transform:scale(1.1)}
 .chat-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#16a34a;border-radius:50%;border:2px solid var(--bg);animation:cpulse 2s infinite}
 @keyframes cpulse{0%,100%{opacity:1}50%{opacity:.4}}
-.chat-win{position:fixed;bottom:90px;right:24px;width:360px;height:520px;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:20px;display:flex;flex-direction:column;z-index:9998;box-shadow:0 20px 60px rgba(0,0,0,0.5);transform:scale(0.8) translateY(20px);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.chat-win{position:fixed;bottom:90px;right:24px;width:360px;height:520px;background:var(--bg2);border:1px solid rgba(43,24,16,0.08);border-radius:20px;display:flex;flex-direction:column;z-index:9998;box-shadow:0 20px 60px rgba(43,24,16,0.25);transform:scale(0.8) translateY(20px);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 .chat-win.copen{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}
-.chead{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;border-radius:20px 20px 0 0;background:var(--bg)}
+.chead{padding:16px 20px;border-bottom:1px solid rgba(43,24,16,0.08);display:flex;align-items:center;gap:12px;border-radius:20px 20px 0 0;background:var(--bg)}
 .cavatar{width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:white;flex-shrink:0}
 .cmsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
 .cmsg{max-width:80%;display:flex;flex-direction:column;gap:3px}
 .cmsg.bot{align-self:flex-start}.cmsg.user{align-self:flex-end}
-.cbub{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5;font-family:'Outfit',sans-serif}
+.cbub{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5;font-family:'Figtree',sans-serif}
 .cmsg.bot .cbub{background:var(--bg3);color:var(--text);border-radius:4px 16px 16px 16px}
 .cmsg.user .cbub{background:var(--red);color:white;border-radius:16px 16px 4px 16px}
 .ctime{font-size:10px;color:var(--muted);padding:0 4px}.cmsg.user .ctime{text-align:right}
 .cqr{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
-.cqbtn{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
-.cqbtn:hover{border-color:rgba(232,55,61,.4);color:var(--text)}
+.cqbtn{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid rgba(43,24,16,0.08);background:transparent;color:var(--muted);cursor:pointer;font-family:'Figtree',sans-serif;transition:all .15s}
+.cqbtn:hover{border-color:rgba(232,93,93,.4);color:var(--text)}
 .ctyping{display:flex;align-items:center;gap:4px;padding:10px 14px;background:var(--bg3);border-radius:4px 16px 16px 16px;align-self:flex-start}
 .ctyping span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:cbounce .8s infinite}
 .ctyping span:nth-child(2){animation-delay:.15s}.ctyping span:nth-child(3){animation-delay:.3s}
 @keyframes cbounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.cinput{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:8px;align-items:flex-end}
-.cinp{flex:1;background:var(--bg3);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;resize:none;max-height:80px}
-.cinp:focus{border-color:rgba(232,55,61,.5)}.cinp::placeholder{color:var(--muted)}
+.cinput{padding:12px 16px;border-top:1px solid rgba(43,24,16,0.08);display:flex;gap:8px;align-items:flex-end}
+.cinp{flex:1;background:var(--bg3);border:1px solid rgba(43,24,16,0.08);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;font-family:'Figtree',sans-serif;outline:none;resize:none;max-height:80px}
+.cinp:focus{border-color:rgba(232,93,93,.5)}.cinp::placeholder{color:var(--muted)}
 .csbtn{width:38px;height:38px;background:var(--red);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;color:white}
-.csbtn:disabled{background:#333;cursor:not-allowed}
-@media(max-width:900px){nav{padding:16px 24px}.nav-links{display:none}.mobile-catalog{display:flex !important}.hero{padding:120px 24px 60px}.section{padding:72px 24px}.calc-grid{grid-template-columns:1fr;gap:40px}.features-grid{grid-template-columns:1fr}.cta-section{margin:0 24px 80px;padding:52px 28px}footer{padding:36px 24px;flex-direction:column}.hero-stats{gap:32px}}
+.csbtn:disabled{background:#E8DDD0;cursor:not-allowed}
+@media(max-width:900px){nav{padding:16px 24px}.nav-links{display:none}.nav-search-wrap{display:none}.mobile-catalog{display:flex !important}.hero{padding:120px 24px 60px}.section{padding:72px 24px}.calc-grid{grid-template-columns:1fr;gap:40px}.features-grid{grid-template-columns:1fr}.cta-section{margin:0 24px 80px;padding:52px 28px}footer{padding:36px 24px;flex-direction:column}.hero-stats{gap:32px}.promo-carousel{margin:48px 24px 0}.promo-slide{flex-direction:column;align-items:flex-start;padding:28px 24px 40px;text-align:left}.trust-strip{margin:16px 24px 0;grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.chat-win{right:12px;left:12px;width:auto}.chat-fab{bottom:16px;right:16px}}
 </style>
 </head>
 <body>
 <nav>
   <div class="logo">АРИ<span>ШОП</span></div>
+  <div class="nav-search-wrap">
+    <div class="nav-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="navSearchInput" placeholder="Барааг хайх…" autocomplete="off" oninput="onNavSearch(this.value)" onfocus="onNavSearchFocus()" onblur="onNavSearchBlur()">
+    </div>
+    <div class="nav-search-dropdown" id="navSearchDropdown"></div>
+  </div>
   <ul class="nav-links">
     <li><a href="catalog.html">🛍 Бараа</a></li>
     <li><a href="#platforms">Дэлгүүрүүд</a></li>
@@ -133,20 +168,63 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
   </div>
 </section>
 
+<div class="promo-carousel" id="promoCarousel">
+  <div class="promo-track" id="promoTrack">
+    <div class="promo-slide" style="background:rgba(232,93,93,0.12)">
+      <div>
+        <span class="promo-tag" style="color:var(--red)">Өвлийн хямдрал</span>
+        <h3>Сонгосон бараанд 40% хүртэл хямдрал</h3>
+        <p>Купанг, Нейвер дэх өвлийн цуглуулгаас — 12/31 хүртэл.</p>
+      </div>
+      <div class="promo-icon" style="background:rgba(232,93,93,0.2)">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+      </div>
+    </div>
+    <div class="promo-slide" style="background:rgba(47,179,128,0.14)">
+      <div>
+        <span class="promo-tag" style="color:var(--gold)">Трекинг систем</span>
+        <h3>Захиалгаа Сөүлээс УБ хүртэл хянаарай</h3>
+        <p>Бараа хаана явааг апп/чатаас бодит цагаар харна.</p>
+      </div>
+      <div class="promo-icon" style="background:rgba(47,179,128,0.22)">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+      </div>
+    </div>
+    <div class="promo-slide" style="background:rgba(232,93,93,0.16)">
+      <div>
+        <span class="promo-tag" style="color:var(--red)">Шинээр ирсэн</span>
+        <h3>K-Beauty шинэ цуглуулга нэмэгдлээ</h3>
+        <p>Innisfree, Laneige, COSRX — хамгийн эрэлттэй брэндүүд.</p>
+      </div>
+      <div class="promo-icon" style="background:rgba(232,93,93,0.24)">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10.5l-4.9 3.4L17 20l-5-3.4L7 20l1.9-6.1L4 10.5l6.1-1.7z"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="promo-dots" id="promoDots"></div>
+</div>
+
+<div class="trust-strip">
+  <div class="trust-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>Баталгаат хүргэлт</div>
+  <div class="trust-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Ил тод үнэ</div>
+  <div class="trust-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>24/7 дэмжлэг</div>
+  <div class="trust-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Чанарын шалгалт</div>
+</div>
+
 <section class="section" id="featured" style="padding-top:60px;padding-bottom:60px">
   <p class="section-tag">Онцлох бараанууд</p>
   <h2 class="section-title">Хамгийн их захиалагддаг</h2>
   <p class="section-sub" style="margin-bottom:32px">Монголчуудын дунд хамгийн алдартай бараанууд</p>
   <div style="display:flex;gap:8px;margin-bottom:28px;overflow-x:auto;padding-bottom:4px">
-    <button onclick="filterHome(this,'all')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(232,55,61,0.5);background:#E8373D;color:white;white-space:nowrap;font-family:'Outfit',sans-serif">Бүгд</button>
-    <button onclick="filterHome(this,'beauty')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">💄 Гоо сайхан</button>
-    <button onclick="filterHome(this,'tech')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">📱 Электроник</button>
-    <button onclick="filterHome(this,'fashion')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">👟 Хувцас</button>
-    <button onclick="filterHome(this,'food')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#888899;white-space:nowrap;font-family:'Outfit',sans-serif">🍜 Хүнс</button>
+    <button onclick="filterHome(this,'all')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(232,93,93,0.5);background:#E85D5D;color:white;white-space:nowrap;font-family:'Figtree',sans-serif">Бүгд</button>
+    <button onclick="filterHome(this,'beauty')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(43,24,16,0.07);background:transparent;color:#8A7263;white-space:nowrap;font-family:'Figtree',sans-serif">💄 Гоо сайхан</button>
+    <button onclick="filterHome(this,'tech')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(43,24,16,0.07);background:transparent;color:#8A7263;white-space:nowrap;font-family:'Figtree',sans-serif">📱 Электроник</button>
+    <button onclick="filterHome(this,'fashion')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(43,24,16,0.07);background:transparent;color:#8A7263;white-space:nowrap;font-family:'Figtree',sans-serif">👟 Хувцас</button>
+    <button onclick="filterHome(this,'food')" class="hcat" style="padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(43,24,16,0.07);background:transparent;color:#8A7263;white-space:nowrap;font-family:'Figtree',sans-serif">🍜 Хүнс</button>
   </div>
   <div id="homeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px"></div>
   <div style="text-align:center;margin-top:36px">
-    <a href="catalog.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#F0EEE9;text-decoration:none;font-weight:600;font-size:15px">Бүх бараа харах →</a>
+    <a href="catalog.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border:1px solid rgba(43,24,16,0.1);border-radius:10px;color:#2B1810;text-decoration:none;font-weight:600;font-size:15px">Бүх бараа харах →</a>
   </div>
 </section>
 
@@ -158,7 +236,7 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
     <div class="platform-card"><div class="platform-icon" style="background:rgba(255,64,64,0.12);color:#FF4040">쿠</div><div class="platform-name">Coupang</div><div class="platform-desc">Солонгосын хамгийн том онлайн дэлгүүр.</div><div class="platform-badge">Хамгийн их захиалагддаг</div></div>
     <div class="platform-card"><div class="platform-icon" style="background:rgba(0,200,100,0.12);color:#00C864">N</div><div class="platform-name">Naver Smart Store</div><div class="platform-desc">Дотоодын брэндүүд, тусгай бүтээгдэхүүн.</div><div class="platform-badge">50,000+ худалдагч</div></div>
     <div class="platform-card"><div class="platform-icon" style="background:rgba(0,120,255,0.12);color:#0078FF">G</div><div class="platform-name">Gmarket & Auction</div><div class="platform-desc">Хямдрал, урамшуулал — хамгийн сайн үнэ.</div><div class="platform-badge">Хямдралтай бараа</div></div>
-    <div class="platform-card"><div class="platform-icon" style="background:rgba(245,166,35,0.12);color:var(--gold)">+</div><div class="platform-name">Бусад дэлгүүрүүд</div><div class="platform-desc">Musinsa, Olive Young болон 1,000+ дэлгүүр.</div><div class="platform-badge">URL-аар захиалах</div></div>
+    <div class="platform-card"><div class="platform-icon" style="background:rgba(47,179,128,0.12);color:var(--gold)">+</div><div class="platform-name">Бусад дэлгүүрүүд</div><div class="platform-desc">Musinsa, Olive Young болон 1,000+ дэлгүүр.</div><div class="platform-badge">URL-аар захиалах</div></div>
   </div>
 </section>
 
@@ -244,8 +322,8 @@ footer{border-top:1px solid var(--border);padding:48px 60px;display:flex;justify
 <div class="chat-win" id="cwin">
   <div class="chead">
     <div class="cavatar">АШ</div>
-    <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#F0EEE9">АриШоп туслах</div><div style="font-size:12px;color:#16a34a;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block"></span>Онлайн</div></div>
-    <button onclick="ctoggle()" style="background:none;border:none;color:#888899;font-size:18px;cursor:pointer">✕</button>
+    <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#2B1810">АриШоп туслах</div><div style="font-size:12px;color:#16a34a;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block"></span>Онлайн</div></div>
+    <button onclick="ctoggle()" style="background:none;border:none;color:#8A7263;font-size:18px;cursor:pointer">✕</button>
   </div>
   <div class="cmsgs" id="cmsgs"></div>
   <div class="cqr" id="cqr">
@@ -278,14 +356,14 @@ var PC2={coupang:'#FF4040',naver:'#00C864',gmarket:'#4A9FFF'};
 var PN2={coupang:'쿠팡',naver:'Naver',gmarket:'Gmarket'};
 var homeCat='all';
 function filterHome(btn,cat){
-  document.querySelectorAll('.hcat').forEach(function(b){b.style.background='transparent';b.style.color='#888899';b.style.borderColor='rgba(255,255,255,0.07)';});
-  btn.style.background='#E8373D';btn.style.color='white';btn.style.borderColor='rgba(232,55,61,0.5)';
+  document.querySelectorAll('.hcat').forEach(function(b){b.style.background='transparent';b.style.color='#8A7263';b.style.borderColor='rgba(43,24,16,0.07)';});
+  btn.style.background='#E85D5D';btn.style.color='white';btn.style.borderColor='rgba(232,93,93,0.5)';
   homeCat=cat;renderHome();
 }
 function renderHome(){
   var list=homeCat==='all'?HP:HP.filter(function(p){return p.cat===homeCat;});
   document.getElementById('homeGrid').innerHTML=list.map(function(p){
-    return '<div onclick="location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'" style="background:#13131C;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s" onmouseover="this.style.borderColor=\'rgba(232,55,61,0.3)\';this.style.transform=\'translateY(-3px)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.07)\';this.style.transform=\'translateY(0)\'"><div style="position:relative;padding-top:100%;background:#1A1A26"><img src="'+p.img+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://via.placeholder.com/300x300/1A1A26/555?text=📦\'"><div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px;background:'+PC2[p.plat]+'22;color:'+PC2[p.plat]+';border:1px solid '+PC2[p.plat]+'44">'+PN2[p.plat]+'</div>'+(p.badge?'<div style="position:absolute;top:8px;right:8px;background:#E8373D;color:white;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px">'+p.badge+'</div>':'')+'</div><div style="padding:12px"><div style="font-size:12px;color:#F0EEE9;line-height:1.4;margin-bottom:6px">'+p.name+'</div><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px"><span style="font-size:14px;font-weight:700">₩'+p.price.toLocaleString()+'</span><span style="font-size:11px;color:#F5A623">≈'+Math.round(p.price*2.7).toLocaleString()+'₮</span></div><button onclick="event.stopPropagation();location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'" style="width:100%;background:#E8373D;color:white;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Outfit\',sans-serif">Захиалах →</button></div></div>';
+    return '<div onclick="location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'" style="background:#FFEBDB;border:1px solid rgba(43,24,16,0.07);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s" onmouseover="this.style.borderColor=\'rgba(232,93,93,0.3)\';this.style.transform=\'translateY(-3px)\'" onmouseout="this.style.borderColor=\'rgba(43,24,16,0.07)\';this.style.transform=\'translateY(0)\'"><div style="position:relative;padding-top:100%;background:#FFDDC7"><img src="'+p.img+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://via.placeholder.com/300x300/FFDDC7/8A7263?text=📦\'"><div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px;background:'+PC2[p.plat]+'22;color:'+PC2[p.plat]+';border:1px solid '+PC2[p.plat]+'44">'+PN2[p.plat]+'</div>'+(p.badge?'<div style="position:absolute;top:8px;right:8px;background:#E85D5D;color:white;font-size:10px;font-weight:700;padding:3px 7px;border-radius:100px">'+p.badge+'</div>':'')+'</div><div style="padding:12px"><div style="font-size:12px;color:#2B1810;line-height:1.4;margin-bottom:6px">'+p.name+'</div><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px"><span style="font-size:14px;font-weight:700">₩'+p.price.toLocaleString()+'</span><span style="font-size:11px;color:#2FB380">≈'+Math.round(p.price*2.7).toLocaleString()+'₮</span></div><button onclick="event.stopPropagation();location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'" style="width:100%;background:#E85D5D;color:white;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:\'Figtree\',sans-serif">Захиалах →</button></div></div>';
   }).join('');
 }
 renderHome();
@@ -304,8 +382,57 @@ function calculate(){
   document.getElementById('result-detail').textContent='Бараа: '+Math.round(priceInMNT).toLocaleString()+' + Тээвэр: '+Math.round(shippingMNT).toLocaleString()+' + Хураамж: '+Math.round(serviceMNT).toLocaleString()+' ₮';
 }
 
+// NAV SEARCH
+function escHtml(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function onNavSearch(q){
+  q=q.trim().toLowerCase();
+  var dd=document.getElementById('navSearchDropdown');
+  if(!q){dd.classList.remove('open');dd.innerHTML='';return;}
+  var matches=HP.filter(function(p){return p.name.toLowerCase().indexOf(q)!==-1;}).slice(0,6);
+  dd.innerHTML=matches.length?matches.map(function(p){
+    return '<div class="nsd-item" onmousedown="location.href=\'order.html?title='+encodeURIComponent(p.name)+'&price='+p.price+'&platform='+p.plat+'\'">'
+      +'<div class="nsd-thumb">'+escHtml(p.name[0])+'</div>'
+      +'<span class="nsd-name">'+escHtml(p.name)+'</span>'
+      +'<span class="nsd-price">≈'+Math.round(p.price*2.7).toLocaleString()+'₮</span>'
+      +'</div>';
+  }).join(''):'<div class="nsd-empty">Илэрц олдсонгүй</div>';
+  dd.classList.add('open');
+}
+function onNavSearchFocus(){
+  if(document.getElementById('navSearchInput').value.trim())document.getElementById('navSearchDropdown').classList.add('open');
+}
+function onNavSearchBlur(){
+  setTimeout(function(){document.getElementById('navSearchDropdown').classList.remove('open');},150);
+}
+
+// PROMO CAROUSEL
+(function(){
+  var track=document.getElementById('promoTrack');
+  var dotsWrap=document.getElementById('promoDots');
+  if(!track)return;
+  var slideCount=track.children.length;
+  var idx=0;
+  function renderDots(){
+    dotsWrap.innerHTML='';
+    for(var i=0;i<slideCount;i++){
+      var b=document.createElement('button');
+      b.setAttribute('aria-label','Сурталчилгаа '+(i+1));
+      b.style.width=(i===idx?'28px':'10px');
+      b.style.background=i===idx?'var(--red)':'rgba(43,24,16,0.18)';
+      (function(i){b.onclick=function(){goTo(i);};})(i);
+      dotsWrap.appendChild(b);
+    }
+  }
+  function goTo(i){
+    idx=i;
+    track.style.transform='translateX(-'+(idx*100)+'%)';
+    renderDots();
+  }
+  renderDots();
+  setInterval(function(){goTo((idx+1)%slideCount);},4500);
+})();
+
 // CHAT
-var GROQ_KEY = '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';
 var CSYS = 'You are AriShop assistant. ALWAYS respond in correct, simple Mongolian language only. Never use broken or nonsensical Mongolian words. Keep answers SHORT - maximum 4 sentences.\n\nAriShop info:\n- Phone: +976 7211 8286\n- Khan Bank: 5941051607 (Sukhbaatar Ariuntuya)\n- Delivery: 7-14 days standard, 5-7 days express (+20,000 MNT)\n- Service fee: 8% of product price\n- Exchange rate: 1 Korean Won = 2.7 Mongolian Tugrug\n\nWHEN USER ASKS ABOUT A PRODUCT: Translate the Mongolian product name to Korean, then provide EXACTLY this format (nothing more):\n\nТа [бараа] хайж байна. Купангаас хайх линкүүд:\n1. https://www.coupang.com/np/search?q=[KOREAN_WORD]&channel=user\n2. https://www.coupang.com/np/search?q=[KOREAN_WORD]+저렴한&channel=user\n3. https://www.coupang.com/np/search?q=[KOREAN_WORD]+베스트&channel=user\n\nLinк дээр дарж бараагаа сонгоод URL-г order.html дээр оруулж захиалаарай.\n\nMongolian to Korean dictionary:\n- гутал = 신발\n- чихэвч = 이어폰\n- нүүрний тос = 얼굴크림\n- лапша = 라면\n- цүнх = 가방\n- хувцас = 의류\n- витамин = 비타민\n- тоглоом = 장난감\n- утас = 스마트폰\n\nFor money: say exactly "X вон нь Y төгрөг болно" (multiply won by 2.7)';
 var copen=false, cbusy=false, chist=[];
 
@@ -356,20 +483,16 @@ async function cmsg(){
   m.appendChild(td);
   m.scrollTop=m.scrollHeight;
   try{
-    var response=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    var response=await fetch('/api/chat',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+GROQ_KEY
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'llama-3.3-70b-versatile',
-        max_tokens:500,
-        messages:[{role:'system',content:CSYS}].concat(chist)
+        system:CSYS,
+        messages:chist
       })
     });
     var data=await response.json();
-    var reply=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'Уучлаарай алдаа гарлаа. +976 7211 8286';
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Уучлаарай алдаа гарлаа. +976 7211 8286';
     var ctdEl=document.getElementById('ctd');
     if(ctdEl)ctdEl.remove();
     cbot(reply);

@@ -4,34 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>АриШоп — Бараа хайх</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Yeseva+One&display=swap" rel="stylesheet">
 <style>
-:root{--red:#E8373D;--gold:#F5A623;--bg:#09090F;--bg2:#13131C;--bg3:#1A1A26;--text:#F0EEE9;--muted:#888899;--border:rgba(255,255,255,0.07)}
+:root{--red:#E85D5D;--gold:#2FB380;--bg:#FFF6EE;--bg2:#FFEBDB;--bg3:#FFDDC7;--text:#2B1810;--muted:#8A7263;--border:rgba(43,24,16,0.07);--heading:'Yeseva One',Georgia,serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(9,9,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
-.logo{font-size:20px;font-weight:900;text-decoration:none;color:var(--text)}.logo span{color:var(--red)}
+body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(255,246,238,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.logo{font-family:var(--heading);font-weight:400;font-size:21px;text-decoration:none;color:var(--text)}.logo span{color:var(--red)}
 .nav-links{display:flex;gap:28px;list-style:none}.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}.nav-links a:hover,.nav-links a.active{color:var(--text)}
 .order-btn{background:var(--red);color:white;padding:9px 20px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none}
 
 /* SEARCH HERO */
-.search-hero{padding:48px 40px 32px;background:linear-gradient(180deg,rgba(232,55,61,0.05) 0%,transparent 100%);border-bottom:1px solid var(--border)}
-.search-hero h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+.search-hero{padding:48px 40px 32px;background:linear-gradient(180deg,rgba(232,93,93,0.05) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.search-hero h1{font-family:var(--heading);font-weight:400;font-size:30px;letter-spacing:0;margin-bottom:8px}
 .search-hero h1 span{color:var(--red)}
 .search-hero p{color:var(--muted);font-size:14px;margin-bottom:24px}
 .search-bar{display:flex;gap:10px;max-width:700px}
 .search-wrap{flex:1;position:relative}
 .search-ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--muted)}
-.search-input{width:100%;background:var(--bg2);border:2px solid rgba(232,55,61,0.3);color:var(--text);padding:14px 16px 14px 48px;border-radius:12px;font-size:16px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
-.search-input:focus{border-color:rgba(232,55,61,0.7)}
+.search-input{width:100%;background:var(--bg2);border:2px solid rgba(232,93,93,0.3);color:var(--text);padding:14px 16px 14px 48px;border-radius:12px;font-size:16px;font-family:'Figtree',sans-serif;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:rgba(232,93,93,0.7)}
 .search-input::placeholder{color:var(--muted)}
-.search-btn{background:var(--red);color:white;padding:14px 28px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;transition:background .2s}
-.search-btn:hover{background:#cf2f34}
+.search-btn{background:var(--red);color:white;padding:14px 28px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:'Figtree',sans-serif;white-space:nowrap;transition:background .2s}
+.search-btn:hover{background:#D14545}
 
 /* SUGGESTIONS */
 .suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.sug{padding:6px 14px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
-.sug:hover{border-color:rgba(232,55,61,.4);color:var(--text)}
+.sug{padding:6px 14px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Figtree',sans-serif;transition:all .2s}
+.sug:hover{border-color:rgba(232,93,93,.4);color:var(--text)}
 
 /* RESULTS AREA */
 .results-area{padding:32px 40px}
@@ -39,12 +41,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 4
 .results-title{font-size:22px;font-weight:700;margin-bottom:4px}
 .results-title span{color:var(--red)}
 .results-sub{font-size:14px;color:var(--muted)}
-.kr-word{display:inline-block;background:rgba(232,55,61,0.1);color:var(--red);border:1px solid rgba(232,55,61,0.25);padding:3px 10px;border-radius:100px;font-size:13px;font-weight:700;margin-left:8px}
+.kr-word{display:inline-block;background:rgba(232,93,93,0.1);color:var(--red);border:1px solid rgba(232,93,93,0.25);padding:3px 10px;border-radius:100px;font-size:13px;font-weight:700;margin-left:8px}
 
 /* PRODUCT GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;cursor:pointer}
-.card:hover{border-color:rgba(232,55,61,.3);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.card:hover{border-color:rgba(232,93,93,.3);transform:translateY(-3px);box-shadow:0 8px 28px rgba(43,24,16,.18)}
 .card-img{position:relative;padding-top:100%;background:var(--bg3);overflow:hidden}
 .card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .3s}
 .card:hover .card-img img{transform:scale(1.05)}
@@ -54,9 +56,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 4
 .card-price{font-size:16px;font-weight:700;margin-bottom:3px}
 .card-mnt{font-size:12px;color:var(--gold);margin-bottom:10px}
 .card-btns{display:flex;gap:8px}
-.btn-order{flex:1;background:var(--red);color:white;border:none;padding:10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .2s}
-.btn-order:hover{background:#cf2f34}
-.btn-coupang{flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:4px}
+.btn-order{flex:1;background:var(--red);color:white;border:none;padding:10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Figtree',sans-serif;transition:background .2s}
+.btn-order:hover{background:#D14545}
+.btn-coupang{flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Figtree',sans-serif;transition:all .2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:4px}
 .btn-coupang:hover{border-color:rgba(255,64,64,0.4);color:#FF6060}
 
 /* COUPANG SECTION */
@@ -151,7 +153,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 4
     <!-- АриШопын каталогийн бараанууд -->
     <div id="catalogSection" style="display:none">
       <div style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px">
-        <span style="background:rgba(232,55,61,0.1);color:var(--red);padding:4px 12px;border-radius:100px;font-size:12px">АриШопын бараанууд</span>
+        <span style="background:rgba(232,93,93,0.1);color:var(--red);padding:4px 12px;border-radius:100px;font-size:12px">АриШопын бараанууд</span>
       </div>
       <div class="grid" id="catalogGrid"></div>
     </div>
@@ -167,7 +169,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 4
       <div class="coupang-links" id="coupangLinks"></div>
     </div>
     <!-- Захиалгын заавар -->
-    <div style="background:rgba(232,55,61,0.06);border:1px solid rgba(232,55,61,0.15);border-radius:12px;padding:20px;display:flex;align-items:flex-start;gap:14px">
+    <div style="background:rgba(232,93,93,0.06);border:1px solid rgba(232,93,93,0.15);border-radius:12px;padding:20px;display:flex;align-items:flex-start;gap:14px">
       <div style="font-size:24px">💡</div>
       <div>
         <div style="font-weight:700;margin-bottom:4px">Купангаас бараа сонгосон уу?</div>
@@ -247,7 +249,7 @@ function showResults(query, mn, kr) {
     catSection.style.display = 'block';
     catGrid.innerHTML = matching.map(function(p) {
       return '<div class="card">' +
-        '<div class="card-img"><img src="' + p.img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/300x300/1A1A26/555?text=📦\'">' +
+        '<div class="card-img"><img src="' + p.img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/300x300/FFDDC7/8A7263?text=📦\'">' +
         (p.badge ? '<div class="card-badge" style="background:var(--red);color:white">' + p.badge + '</div>' : '') +
         '</div>' +
         '<div class="card-body">' +
