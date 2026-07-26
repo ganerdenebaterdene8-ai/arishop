@@ -2,24 +2,24 @@ const PROJECT = 'arishop-2671a';
 const FS = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/prices/';
 
 const CATALOG = [
-  ['DJI Mini 4K дрон', 'DJI Mini 4K 드론', 'dji'],
-  ['DJI Mini 4 Pro', 'DJI Mini 4 Pro 드론', 'dji'],
-  ['DJI Neo селфи дрон', 'DJI Neo 드론', 'dji'],
-  ['DJI Flip дрон', 'DJI Flip 드론', 'dji'],
-  ['DJI Avata 2 FPV дрон', 'DJI Avata 2 드론', 'dji'],
-  ['DJI Air 3S дрон', 'DJI Air 3S 드론', 'dji'],
-  ['DJI Mavic 3 Classic', 'DJI Mavic 3 Classic 드론', 'dji'],
-  ['Potensic ATOM 2 дрон', 'Potensic ATOM 2 드론', 'potensic'],
-  ['HoverAir X1 дрон', 'HoverAir X1 드론', 'hover'],
-  ['Хүүхдийн mini дрон LED', '미니드론 LED 어린이', ''],
-  ['DJI Goggles N3 нүдний шил', 'DJI Goggles N3', 'dji'],
-  ['DJI RC 2 удирдлага', 'DJI RC 2 조종기', 'dji'],
-  ['Дроны нэмэлт батарей', 'DJI 인텔리전트 배터리', 'dji'],
-  ['Дрон цэнэглэх hub', 'DJI 충전 허브', 'dji'],
-  ['Дроны сэнс 4 хос', 'DJI 프로펠러', 'dji'],
-  ['Дроны сэнсний хамгаалах тор', 'DJI 프로펠러 가드', ''],
-  ['ND шүүлтүүрийн багц', 'DJI ND 필터 세트', ''],
-  ['Зөөврийн дроны цүнх', '드론 가방 케이스', ''],
+  ['DJI Mini 4K дрон', 'DJI Mini 4K 드론', 'dji', 300000],
+  ['DJI Mini 4 Pro', 'DJI Mini 4 Pro 드론', 'dji', 500000],
+  ['DJI Neo селфи дрон', 'DJI Neo 드론', 'dji', 200000],
+  ['DJI Flip дрон', 'DJI Flip 드론', 'dji', 400000],
+  ['DJI Avata 2 FPV дрон', 'DJI Avata 2 드론', 'dji', 500000],
+  ['DJI Air 3S дрон', 'DJI Air 3S 드론', 'dji', 900000],
+  ['DJI Mavic 3 Classic', 'DJI Mavic 3 Classic 드론', 'dji', 1200000],
+  ['Potensic ATOM 2 дрон', 'Potensic ATOM 2 드론', 'potensic', 200000],
+  ['HoverAir X1 дрон', 'HoverAir X1 드론', 'hover', 300000],
+  ['Хүүхдийн mini дрон LED', '미니드론 LED 어린이', '', 10000],
+  ['DJI Goggles N3 нүдний шил', 'DJI Goggles N3', 'dji', 200000],
+  ['DJI RC 2 удирдлага', 'DJI RC 2 조종기', 'dji', 200000],
+  ['Дроны нэмэлт батарей', 'DJI 인텔리전트 배터리', 'dji', 50000],
+  ['Дрон цэнэглэх hub', 'DJI 충전 허브', 'dji', 20000],
+  ['Дроны сэнс 4 хос', 'DJI 프로펠러', 'dji', 5000],
+  ['Дроны сэнсний хамгаалах тор', 'DJI 프로펠러 가드', '', 5000],
+  ['ND шүүлтүүрийн багц', 'DJI ND 필터 세트', '', 20000],
+  ['Зөөврийн дроны цүнх', '드론 가방 케이스', '', 15000],
 ];
 
 const MARGIN = Number(process.env.MARGIN || 0.15);
@@ -52,8 +52,8 @@ async function naver(q) {
   })).filter((i) => i.krw > 0);
 }
 
-function pick(items, hint) {
-  let list = items;
+function pick(items, hint, min) {
+  let list = items.filter((i) => i.krw >= (min || 0));
   if (hint) {
     const h = list.filter((i) => (i.brand + ' ' + i.title).toLowerCase().includes(hint));
     if (h.length) list = h;
@@ -91,9 +91,9 @@ export default async function handler(req, res) {
   }
   const rate = 2.6;
   const done = [], failed = [];
-  for (const [name, query, hint] of CATALOG) {
+    for (const [name, query, hint, min] of CATALOG) {
     try {
-      const best = pick(await naver(query), hint);
+      const best = pick(await naver(query), hint, min);
       if (!best) { failed.push([name, 'no items']); continue; }
       const mnt = Math.round((best.krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000;
       await save(name, { query, krw: best.krw, mnt, rate, image: best.image, link: best.link, mall: best.mall });
