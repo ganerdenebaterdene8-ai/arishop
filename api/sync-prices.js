@@ -89,7 +89,7 @@ export default async function handler(req, res) {
   if (!process.env.NAVER_ID || !process.env.NAVER_SECRET || !process.env.FIREBASE_API_KEY) {
     return res.status(500).json({ error: 'түлхүүр тохируулаагүй' });
   }
-  const rate = await krwToMnt();
+  const rate = 2.6;
   const done = [], failed = [];
   for (const [name, query, hint] of CATALOG) {
     try {
