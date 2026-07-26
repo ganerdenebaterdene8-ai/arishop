@@ -102,4 +102,6 @@ export default async function handler(req, res) {
       failed.push([name, String(e)]);
     }
   }
-  res.json({ rate, margin: MARGIN, updated: done.length, failed, done });
+ res.json({ rate, margin: MARGIN, updated: done.length, failed, done });
+    res.json({ rate, margin: MARGIN, updated: done.length, failed, done });
+}
