@@ -218,6 +218,8 @@ async function save(name, doc) {
   if (!r.ok) throw new Error('firestore ' + r.status + ' ' + (await r.text()).slice(0, 200));
 }
 
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   const key = (req.query && req.query.key) || '';
   const isCron = !!(req.headers && req.headers['x-vercel-cron']);
@@ -229,16 +231,19 @@ export default async function handler(req, res) {
   }
   const rate = 2.6;
   const done = [], failed = [];
-  for (const [name, query, hint, min] of CATALOG) {
+  async function one([name, query, hint, min]) {
     try {
       const best = pick(await naver(query), hint, min);
-      if (!best) { failed.push([name, 'no items']); continue; }
+      if (!best) { failed.push([name, 'no items']); return; }
       const mnt = Math.round((best.krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000;
       await save(name, { query, krw: best.krw, mnt, rate, image: best.image, link: best.link, mall: best.mall });
       done.push({ name, krw: best.krw, mnt });
     } catch (e) {
       failed.push([name, String(e)]);
     }
+  }
+  for (let i = 0; i < CATALOG.length; i += 10) {
+    await Promise.all(CATALOG.slice(i, i + 10).map(one));
   }
   res.json({ rate, margin: MARGIN, updated: done.length, failed, done });
 }
