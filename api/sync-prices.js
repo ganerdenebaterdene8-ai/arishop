@@ -9,7 +9,7 @@ const CATALOG = [
   ['DJI Avata 2 FPV дрон', 'DJI Avata 2 드론', 'dji', 500000],
   ['DJI Air 3S дрон', 'DJI Air 3S 드론', 'dji', 900000],
   ['DJI Mavic 3 Classic', 'DJI Mavic 3 Classic 드론', 'dji', 1200000],
-  ['Potensic ATOM 2 дрон', 'Potensic ATOM 2 드론', 'potensic', 200000],
+  ['Potensic ATOM 2 дрон', 'Potensic ATOM 2 드론', 'potensic', 100000],
   ['HoverAir X1 дрон', 'HoverAir X1 드론', 'hover', 300000],
   ['Хүүхдийн mini дрон LED', '미니드론 LED 어린이', '', 10000],
   ['DJI Goggles N3 нүдний шил', 'DJI Goggles N3', 'dji', 200000],
