@@ -1,1 +1,1 @@
-#arishop korea 
+arishop
