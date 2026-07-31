@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.vercel.arishopkorea.twa",
+    "sha256_cert_fingerprints": ["BA:76:54:0D:7A:11:8C:C1:36:92:7C:5D:67:03:B0:8D:45:DA:80:8F:FC:B2:15:C5:F0:43:98:D5:FA:A3:8F:91"]
+  }
+}]
