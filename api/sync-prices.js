@@ -1,181 +1,122 @@
+// Дроны барааны үнийг Naver Shopping-аас татаж, ₮ болгож Firestore-ийн `prices`-д хадгална.
+// Vercel Cron өдөрт 2 удаа дуудна (vercel.json). Гараар: /api/sync-prices?key=<SYNC_KEY>
 const PROJECT = 'arishop-2671a';
 const FS = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/prices/';
 
+// [сайт дээрх барааны нэр, Naver хайлтын үг, санамсаргүй хямд/хуурамч зарыг шүүх түлхүүр]
 const CATALOG = [
-  // Дрон
-  ['DJI Mini 4K дрон', 'DJI Mini 4K 드론', 'dji', 300000],
-  ['DJI Mini 4 Pro', 'DJI Mini 4 Pro 드론', 'dji', 500000],
-  ['DJI Neo селфи дрон', 'DJI Neo 드론', 'dji', 200000],
-  ['DJI Flip дрон', 'DJI Flip 드론', 'dji', 400000],
-  ['DJI Avata 2 FPV дрон', 'DJI Avata 2 드론', 'dji', 500000],
-  ['DJI Air 3S дрон', 'DJI Air 3S 드론', 'dji', 900000],
-  ['DJI Mavic 3 Classic', 'DJI Mavic 3 Classic 드론', 'dji', 1200000],
-  ['Potensic ATOM 2 дрон', 'Potensic ATOM 2 드론', 'potensic', 100000],
-  ['HoverAir X1 дрон', 'HoverAir X1 드론', 'hover', 300000],
-  ['Хүүхдийн mini дрон LED', '미니드론 LED 어린이', '', 10000],
-  ['DJI Goggles N3 нүдний шил', 'DJI Goggles N3', 'dji', 200000],
-  ['DJI RC 2 удирдлага', 'DJI RC 2 조종기', 'dji', 200000],
-  ['Дроны нэмэлт батарей', 'DJI 인텔리전트 배터리', 'dji', 50000],
-  ['Дрон цэнэглэх hub', 'DJI 충전 허브', 'dji', 20000],
-  ['Дроны сэнс 4 хос', 'DJI 프로펠러', 'dji', 5000],
-  ['Дроны сэнсний хамгаалах тор', 'DJI 프로펠러 가드', '', 5000],
-  ['ND шүүлтүүрийн багц', 'DJI ND 필터 세트', '', 20000],
-  ['Зөөврийн дроны цүнх', '드론 가방 케이스', '', 15000],
-  // Электроник
-  ['Утасгүй чихэвч Pro', '무선 이어폰 노이즈캔슬링', '', 50000],
-  ['Ухаалаг цаг GT4', '스마트워치 GT4', '', 80000],
-  ['Гар утасны цэнэглэгч 65W', '65W 고속 충전기', '', 15000],
-  ['Bluetooth чанга яригч', '블루투스 스피커', '', 30000],
-  ['LED дэлгэц 27"', '27인치 모니터', '', 150000],
-  ['Тоглоомын хулгана RGB', '게이밍 마우스 RGB', '', 20000],
-  ['Механик гар RK61', 'RK61 기계식 키보드', '', 30000],
-  ['USB-C hub 7 порт', 'USB C 허브 7포트', '', 20000],
-  ['Ухаалаг гэрэл LIFX', '스마트 전구 LIFX', '', 20000],
-  ['Веб камер 4K', '웹캠 4K', '', 40000],
-  ['Микрофон USB', 'USB 마이크', '', 30000],
-  ['Утасны бариул PopSocket', '팝소켓 그립톡', '', 3000],
-  ['Портатив SSD 1TB', '외장 SSD 1TB', '', 80000],
-  ['Ухаалаг цагирган гэрэл', '링라이트 조명', '', 20000],
-  ['Роботын тоос сорогч', '로봇청소기', '', 200000],
-  ['Хөгжмийн чихэвч утастай', '유선 이어폰', '', 10000],
-  ['Ухаалаг үүдний хонх', '스마트 초인종', '', 50000],
-  // Цахилгаан бараа
-  ['LG угаалгын машин 9кг', 'LG 세탁기 9kg', 'lg', 300000],
-  ['Samsung хөргөгч 2 хаалгат', '삼성 냉장고 2도어', '삼성', 400000],
-  ['Cuckoo будааны тогоо 6 хүний', '쿠쿠 밥솥 6인용', '', 80000],
-  ['Агаар цэвэршүүлэгч Winix', '위닉스 공기청정기', '', 100000],
-  ['LG 55" 4K телевизор', 'LG 55인치 4K TV', 'lg', 400000],
-  ['Цахилгаан шарах шүүгээ Air Fryer', '에어프라이어 대용량', '', 40000],
-  ['Индукцион плита 2 толгойт', '인덕션 2구', '', 60000],
-  ['Цахилгаан данх 1.7L', '전기포트 1.7L', '', 15000],
-  ['Усны халаагуур шуурхай', '순간온수기', '', 50000],
-  ['Агааржуулагч чийгшүүлэгч', '가습기', '', 25000],
-  ['Робот тоос сорогч Roborock', '로보락 로봇청소기', '로보락', 300000],
-  ['Цахилгаан зуух мини овен', '미니 오븐', '', 50000],
-  ['Сэнс цамхаг хэлбэрт', '타워팬 선풍기', '', 40000],
-  ['Цахилгаан шүүс шахагч', '착즙기', '', 40000],
-  ['Кофе машин эспрессо', '에스프레소 커피머신', '', 100000],
-  ['Хоол блендер 1200W', '블렌더 1200W', '', 30000],
-  // Гоо сайхан
-  ['Innisfree Green Tea цэвэрлэгээ', '이니스프리 그린티 클렌징', '', 8000],
-  ['Laneige Water Sleeping маск', '라네즈 워터 슬리핑 마스크', '', 15000],
-  ['COSRX Snail Essence', '코스알엑스 달팽이 에센스', '', 12000],
-  ['Гоо сайхны 10 нэрийн багц', '스킨케어 세트 10종', '', 20000],
-  ['Missha BB Cream', '미샤 비비크림', '', 8000],
-  ['Etude House палитр', '에뛰드 아이팔레트', '', 10000],
-  ['Sulwhasoo Ginseng Serum', '설화수 자음생 세럼', '설화수', 60000],
-  ['Beauty of Joseon сэрвэнзэг', '조선미녀 선크림', '', 8000],
-  ['Some By Mi AHA-BHA тоник', '썸바이미 토너', '', 10000],
-  ['Torriden Dive-In Serum', '토리든 다이브인 세럼', '', 10000],
-  ['Anua Heartleaf 77 essence', '아누아 어성초 77 토너', '', 10000],
-  ['Round Lab Dokdo toner', '라운드랩 독도 토너', '', 10000],
-  ['Rom&nd Juicy Lasting уруулын өнгө', '롬앤 쥬시 래스팅 틴트', '', 5000],
-  ['3CE Multi палитр', '3CE 멀티 아이 팔레트', '3ce', 20000],
-  ['Numbuzin Vitamin C сарум', '넘버즈인 비타민C 세럼', '', 10000],
-  ['Klairs Freshly Juiced Vitamin', '클레어스 비타민 세럼', '', 12000],
-  ['Skin1004 Centella ampoule', '스킨1004 센텔라 앰플', '', 10000],
-  ['Amorepacific мөнгөн крем', '아모레퍼시픽 크림', '', 50000],
-  ['Origins маск багц', '오리진스 마스크', '', 20000],
-  // Хүүхэд
-  ['Хүүхдийн тоглоомын багц', '유아 장난감 세트', '', 15000],
-  ['LEGO Duplo цуврал', '레고 듀플로', '레고', 30000],
-  ['Хүүхдийн зурагт ном', '유아 그림책', '', 5000],
-  ['Хүүхдийн бэлгийн иж бүрдэл', '어린이 선물세트', '', 20000],
-  ['Puzzle 100 хэсэгтэй', '퍼즐 100피스', '', 5000],
-  ['Хөгжим гарган зан цоглог', '유아 음악 장난감', '', 15000],
-  ['Багш дүр төрхийн тоглоом', '역할놀이 장난감', '', 15000],
-  ['Хүүхдийн 3D зурагт ном', '팝업북 어린이', '', 8000],
-  ['Уран баримлын шавар', '클레이 점토 세트', '', 5000],
-  ['Хүүхдийн ном 6-р цуврал', '어린이 전집 세트', '', 20000],
-  ['Тоглоомын гал тогоо', '주방놀이 장난감', '', 30000],
-  ['Хөл дугуй тэнцвэржүүлэгч', '밸런스 자전거 유아', '', 40000],
-  ['Хүүхдийн Bluetooth микрофон', '어린이 블루투스 마이크', '', 10000],
-  ['Барилгын блок 200ш', '블록 200피스', '', 15000],
-  ['Хүүхдийн микроскоп', '어린이 현미경', '', 20000],
-  ['Хүнсний дүр зохион багц', '소꿉놀이 세트', '', 10000],
-  // Гэр ахуй
-  ['Гэр ахуйн ухаалаг хэрэгсэл', '스마트홈 기기', '', 20000],
-  ['Ариун цэврийн иж бүрдэл', '욕실용품 세트', '', 10000],
-  ['Гал тогооны хутганы багц', '주방칼 세트', '', 20000],
-  ['Утаагүй тоос сорогч', '무선 청소기', '', 100000],
-  ['Кофе буталгуур', '커피 그라인더', '', 30000],
-  ['Уур зөөгч Steamer', '의류 스티머', '', 30000],
-  ['Ус цэвэршүүлэгч Brita', '브리타 정수기', '브리타', 20000],
-  ['Ариутгагч UV лааз', 'UV 살균기', '', 30000],
-  ['Гүнзгий тогоо 4 хэсэгтэй', '냄비 세트 4종', '', 40000],
-  ['Аяга таваг угаагч цахилгаан', '식기세척기', '', 200000],
-  ['Хөнжил вакуум багц', '이불 압축팩 세트', '', 5000],
-  ['Ор дэрний цэвэрлэгч', '침구 청소기', '', 40000],
-  ['Салфетка автомат', '자동 티슈 디스펜서', '', 10000],
-  ['Тос үлдэгдэл татагч', '기름 흡착 시트', '', 3000],
-  ['Гэрийн үнэртэн диффузер', '아로마 디퓨저', '', 15000],
-  ['Ор дэрний иж бүрдэл', '침구 세트', '', 30000],
-  ['Гэр цэвэрлэх нэг үзүүрт мопп', '물걸레 밀대', '', 10000],
-  ['Ширээний Lamp LED', 'LED 스탠드 조명', '', 15000],
-  // Хувцас
-  ['Өвлийн хөнгөн хүрэм', '경량 패딩 자켓', '', 30000],
-  ['Спортын гүйлтийн пүүз', '러닝화', '', 40000],
-  ['Хөвөнгийн даашинз', '코튼 원피스', '', 20000],
-  ['Оверсайз футболк', '오버핏 티셔츠', '', 8000],
-  ['Жинс өмд slim fit', '슬림핏 청바지', '', 20000],
-  ['Ноосон цамц', '울 니트', '', 25000],
-  ['K-фэшн худади', '오버핏 후드티', '', 20000],
-  ['Пүүз Nike Air цуврал', '나이키 에어 운동화', '나이키', 60000],
-  ['Ханбогийн хээтэй жижиг цүнх', '전통 문양 미니백', '', 15000],
-  ['Спорт бра', '스포츠 브라', '', 10000],
-  ['Гоёмсог сарафан', '롱 원피스', '', 25000],
-  ['Ханбог оффис даашинз', '오피스 원피스', '', 30000],
-  ['Малгай Bucket', '버킷햇', '', 8000],
-  ['Мехийн крышек Cardigan', '가디건', '', 20000],
-  ['Загварлаг оймс 5 хос', '패션 양말 5켤레', '', 3000],
-  ['Спорт өмд jogger', '조거팬츠', '', 15000],
-  ['Дулаан бээлий', '방한 장갑', '', 5000],
-  ['Цамц Silk хийцтэй', '실크 블라우스', '', 25000],
-  // Эрүүл мэнд
-  ['Витамин C багц (60 хоног)', '비타민C 60일', '', 10000],
-  ['Хамрын шүршигч', '코 세척 스프레이', '', 5000],
-  ['Гинкго Билоба', '징코 빌로바', '', 10000],
-  ['Коллаген уух багц', '먹는 콜라겐', '', 15000],
-  ['Пробиотик 30 хоног', '유산균 30일', '', 15000],
-  ['Омега-3 loose капсул', '오메가3', '', 12000],
-  ['Кальци + D3', '칼슘 비타민D', '', 10000],
-  ['Хонгилын бариул PT', '마사지건', '', 30000],
-  ['Ясны эрүүл мэнд багц', '뼈 건강 영양제', '', 15000],
-  ['Мултивитамин эрэгтэй', '남성 종합비타민', '', 15000],
-  ['Мултивитамин эмэгтэй', '여성 종합비타민', '', 15000],
-  ['Иммуни дэмжигч сироп', '면역 시럽 홍삼', '', 15000],
-  ['Нүдний дусал Rohto', '로토 인공눈물', '', 5000],
-  ['Даралт хэмжигч цахилгаан', '혈압계 자동', '', 30000],
-  ['Хоолойн сорогч 3ш', '목 스프레이', '', 5000],
-  ['Улаан жинс цайр серум', '홍삼 진액', '', 20000],
-  ['Магнези B6', '마그네슘 B6', '', 8000],
-  ['Био Ажикко элэгний тос', '밀크씨슬 간 영양제', '', 12000],
-  // Спорт
-  ['Йогийн дэвсгэр 6мм', '요가매트 6mm', '', 10000],
-  ['Гар жингэвч 2кг', '아령 2kg', '', 8000],
-  ['Хатуу бүслүүр Support', '허리 보호대', '', 8000],
-  ['Гүйлтийн уут 12L', '러닝 백팩 12L', '', 20000],
-  ['Бөмбөгний хос 5кг', '덤벨 5kg 세트', '', 15000],
-  ['Foam Roller булт', '폼롤러', '', 8000],
-  ['Спортын дэвсгэр том', '운동 매트 대형', '', 20000],
-  ['Гэрийн иж бүрдэл эспандер', '홈트 밴드 세트', '', 8000],
-  ['Skipping олс автомат', '줄넘기 스마트', '', 5000],
-  ['Хараа сургагч кинэйзи', '반응 훈련 볼', '', 8000],
-  ['Тэнцвэрийн диск', '밸런스 보드', '', 10000],
-  ['Гэрийн боксны бээлий', '복싱 글러브', '', 15000],
-  ['Ус саав спорт 1L', '스포츠 물통 1L', '', 5000],
-  ['Спорт цамц Dri-FIT', '기능성 스포츠 티셔츠', '', 10000],
-  ['Гүйлтийн пүүз Adidas', '아디다스 러닝화', '아디다스', 50000],
-  ['Sport Watch fitness', '스마트밴드 피트니스', '', 20000],
-  ['Kettlebell 8кг', '케틀벨 8kg', '', 20000],
-  ['Пилатес цагиран', '필라테스 링', '', 8000],
+  ['DJI Mini 4K дрон', 'DJI Mini 4K 드론', 'dji'],
+  ['DJI Mini 4 Pro', 'DJI Mini 4 Pro 드론', 'dji'],
+  ['DJI Neo селфи дрон', 'DJI Neo 드론', 'dji'],
+  ['DJI Flip дрон', 'DJI Flip 드론', 'dji'],
+  ['DJI Avata 2 FPV дрон', 'DJI Avata 2 드론', 'dji'],
+  ['DJI Air 3S дрон', 'DJI Air 3S 드론', 'dji'],
+  ['DJI Mavic 3 Classic', 'DJI Mavic 3 Classic 드론', 'dji'],
+  ['Potensic ATOM 2 дрон', 'Potensic ATOM 2 드론', 'potensic'],
+  ['HoverAir X1 дрон', 'HoverAir X1 드론', 'hover'],
+  ['Хүүхдийн mini дрон LED', '미니드론 LED 어린이', ''],
+  ['DJI Goggles N3 нүдний шил', 'DJI Goggles N3', 'dji'],
+  ['DJI RC 2 удирдлага', 'DJI RC 2 조종기', 'dji'],
+  ['Дроны нэмэлт батарей', 'DJI 인텔리전트 배터리', 'dji'],
+  ['Дрон цэнэглэх hub', 'DJI 충전 허브', 'dji'],
+  ['Дроны сэнс 4 хос', 'DJI 프로펠러', 'dji'],
+  ['Дроны сэнсний хамгаалах тор', 'DJI 프로펠러 가드', ''],
+  ['ND шүүлтүүрийн багц', 'DJI ND 필터 세트', ''],
+  ['Зөөврийн дроны цүнх', '드론 가방 케이스', ''],
+  // Olive Young
+  ['Mediheal N.M.F маск 10ш', '메디힐 N.M.F 마스크 10매', '메디힐'],
+  ['Torriden Dive-In цэвэрлэгээний хөөс', '토리든 다이브인 폼 클렌저', '토리든'],
+  ['Round Lab Birch Juice чийгшүүлэгч', '라운드랩 자작나무 수분 크림', '라운드랩'],
+  ['Anua Heartleaf 77 тоник', '아누아 어성초 77 토너', '아누아'],
+  ['Skin1004 Madagascar Centella наранцаг SPF50', '스킨1004 센텔라 선크림', '스킨1004'],
+  ['Beauty of Joseon Relief наранцаг', '조선미녀 맑은씌 선크림', '조선미녀'],
+  ['d\'Alba White Truffle шүршигч серум', '달바 화이트 트러플 미스트 세럼', '달바'],
+  ['Ma:nyo Pure Cleansing тос', '마녀공장 퓨어 클렌징 오일', '마녀'],
+  ['Abib Heartleaf хөнгөвчлөх маск 10ш', '아비브 어성초 마스크팩', '아비브'],
+  ['Goodal Green Tangerine Vita C сарум', '구달 청귤 비타C 세럼', '구달'],
+  ['Isntree Hyaluronic тоник', '이즈셬트리 히알론 토너', '이즈셬트리'],
+  ['Aestura Atobarrier 365 крем', '에스트라 아토배리어 365 크림', '에스트라'],
+  ['Dr.G Red Blemish Clear крем', '닥터지 레드 블댈미쉬 크림', ''],
+  ['Bioheal BOH Probioderm лифтинг крем', '바이오힐보 프로바이오더름 크림', ''],
+  ['VT Reedle Shot 100 essence', 'VT 리들샷 100', 'vt'],
+  ['Mixsoon Bean essence', '믹슨 콩 에센스', '믹슨'],
+  ['Wakemake уруулын тинт', '웨이크메이크 립 틴트', '웨이크메이크'],
+  ['Peripera Ink Velvet тинт', '페리페라 잉크 벨벳 틴트', '페리페라'],
+  ['Clio Kill Cover кушон', '클리오 킬커버 쿠션', '클리오'],
+  ['Fwee Pudding Pot блашер', '퓼이 푸딩팟', ''],
+  ['Unove Deep Damage үс сэргээгч маск', '어노브 딥 데미지 트리트먼트', '어노브'],
+  ['Mise-en-scène Perfect Serum үсний тос', '미장센 퍼펙트 세럼 오일', '미장센'],
+  ['Dr.Forhair Folligen шампунь', '닥터포헤어 폴리젠 샴푸', '닥터포헤어'],
+  ['Kundal Honey & Macadamia шампунь', '쿤달 샴푸 허니 마카다미아', '쿤달'],
+  ['Olive Young Wellage Real Hyaluronic ампул', '웰라쥬 리얼 히알론 액플', '웰라쥬'],
+  ['Bringgreen Zinc Teca цэвэрлэгч', '브링그린 징크테카 클렌저', '브링그린'],
+  ['Delight Project амтат eyeshadow палитр', '아이쉐도우 팔레트', ''],
+  ['Milk Touch Be My First глиттер', '밀크터치 글리터', '밀크터치'],
+  // Musinsa
+  ['Musinsa Standard оверсайз хүрэм', '무신사 스탠다드 오버사이즈 자켓', '무신사'],
+  ['Covernat лого худади', '커버낳 후드', '커버낳'],
+  ['Thisisneverthat футболк', '디스이즈네버덧 티셔츠', ''],
+  ['Musinsa Standard слакс өмд', '무신사 스탠다드 슬랙스', '무신사'],
+  ['Mahagrid график цамц', '마하그리드 티셔츠', '마하그리드'],
+  ['Lee жинс өмд', '리 청바지 데님', ''],
+  ['Fila кореан пүүз', '휴라 운동화', '휴라'],
+  ['Musinsa Standard ноосон коат', '무신사 스탠다드 울 코트', '무신사'],
+  ['Romantic Crown малгай', '로맨틱크라운 볼캐프', ''],
+  ['Partimento карго өмд', '파르티먼토 카고팬츠', ''],
+  // Gmarket / Daiso
+  ['Gmarket Big Smile аяга тавгийн багц', '그릇 세트 식기', ''],
+  ['Локнлок хадгалах сав 10ш', '락앤락 밀폐용기 세트', '락앤락'],
+  ['Солонгос гимбап хийх багц', '김밥 만들기 세트', ''],
+  ['Cuckoo даралтат тогоо 10 хүний', '쿠쿠 압력밥솜 10인용', '쿠쿠'],
+  ['Кимчи хадгалах хөргөгч сав', '김치통 밀폐용기', ''],
+  ['Солонгос рамен 20ш багц', '라면 20개 세트', ''],
+  ['Samyang Buldak 40ш багц', '삼양 불닭볶음면 40개', '삼양'],
+  ['Жинсэнгийн ханд бэлэгний багц', '홍삼 엑기트 선물세트', ''],
+  // Kream sneakers
+  ['Nike Dunk Low Panda (Kream баталгаат)', '나이키 덩크 로우 팬다', '나이키'],
+  ['Jordan 1 Mid пүүз', '조던 1 미드', '조던'],
+  ['New Balance 530 пүүз', '뉴발란스 530', '뉴발란스'],
+  ['Adidas Samba OG', '아디다스 삼바 OG', '아디다스'],
+  ['Stussy футболк', '스투시 티셔츠', '스투시'],
+  ['Supreme малгай', '슈프림 캐프', '슈프림'],
+  ['IAB Studio худади', '아이에이비 스튜디오 후드', ''],
+  ['Asics Gel-Kayano 14', '아실록 젤카야노 14', '아실록'],
+  // ABLY / Zigzag
+  ['ABLY зуны даашинз', '여름 원피스', ''],
+  ['Zigzag кроп цамц', '크롭 티셔츠 여성', ''],
+  ['ABLY өргөн өмд', '와이드 팬츠 여성', ''],
+  ['Zigzag кардиган', '가디건 여성', ''],
+  ['ABLY түрийвч цүнх', '숙더백 여성', ''],
+  ['Zigzag пишмэл юбка', '플리츠 스커트', ''],
+  ['ABLY блуз енгийн', '블라우스 여성', ''],
+  ['Zigzag намарын тренч коат', '트렌치코트 여성', ''],
+  // Danawa
+  ['Зөөврийн компьютер LG Gram 16"', 'LG 그램 16', 'lg'],
+  ['Гейминг компьютер RTX 4060', '게이밍 PC RTX 4060', ''],
+  ['Samsung Odyssey G5 дэлгэц', '삼성 오디세이 G5', '삼성'],
+  ['Механик гар Keychron K8', '키크론 K8', '키크론'],
+  ['Logitech MX Master 3S хулгана', '로지텍 MX Master 3S', '로지텍'],
+  ['График карт RTX 4070', 'RTX 4070 그래픽카드', ''],
+  ['SSD Samsung 990 Pro 2TB', '삼성 990 PRO 2TB', '삼성'],
+  ['Гейминг сандал', '게이밍 의자', ''],
 ];
 
-const MARGIN = Number(process.env.MARGIN || 0.15);
-const SHIP_MNT = Number(process.env.SHIP_MNT || 0);
+const MARGIN = Number(process.env.MARGIN || 0.15);      // таны маржин
+const SHIP_MNT = Number(process.env.SHIP_MNT || 0);     // барааны тээврийн нэмэлт (хүсвэл)
+const RATE_FALLBACK = Number(process.env.KRW_MNT || 2.6);
+
+async function krwToMnt() {
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/KRW');
+    const d = await r.json();
+    const v = d && d.rates && Number(d.rates.MNT);
+    if (v && v > 0.5 && v < 20) return v;
+  } catch (e) {}
+  return RATE_FALLBACK;
+}
 
 async function naver(q) {
-  const r = await fetch('https://openapi.naver.com/v1/search/shop.json?display=10&sort=sim&query=' + encodeURIComponent(q), {
+  const r = await fetch('https://openapi.naver.com/v1/search/shop.json?display=10&sort=asc&query=' + encodeURIComponent(q), {
     headers: { 'X-Naver-Client-Id': process.env.NAVER_ID, 'X-Naver-Client-Secret': process.env.NAVER_SECRET },
   });
   if (!r.ok) throw new Error('naver ' + r.status);
@@ -190,15 +131,18 @@ async function naver(q) {
   })).filter((i) => i.krw > 0);
 }
 
-function pick(items, hint, min) {
-  let list = items.filter((i) => i.krw >= (min || 0));
+// хэт хямд (хэрэгсэл/хуурамч) зарыг шүүх: медианы 40%-иас доошийг хаяна
+function pick(items, hint) {
+  let list = items;
   if (hint) {
     const h = list.filter((i) => (i.brand + ' ' + i.title).toLowerCase().includes(hint));
     if (h.length) list = h;
   }
   if (!list.length) return null;
   const sorted = list.slice().sort((a, b) => a.krw - b.krw);
-  return sorted[Math.floor(sorted.length / 2)];
+  const med = sorted[Math.floor(sorted.length / 2)].krw;
+  const ok = sorted.filter((i) => i.krw >= med * 0.4);
+  return ok[0] || sorted[0];
 }
 
 async function save(name, doc) {
@@ -218,8 +162,6 @@ async function save(name, doc) {
   if (!r.ok) throw new Error('firestore ' + r.status + ' ' + (await r.text()).slice(0, 200));
 }
 
-export const config = { maxDuration: 60 };
-
 export default async function handler(req, res) {
   const key = (req.query && req.query.key) || '';
   const isCron = !!(req.headers && req.headers['x-vercel-cron']);
@@ -227,23 +169,20 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   if (!process.env.NAVER_ID || !process.env.NAVER_SECRET || !process.env.FIREBASE_API_KEY) {
-    return res.status(500).json({ error: 'түлхүүр тохируулаагүй' });
+    return res.status(500).json({ error: 'NAVER_ID / NAVER_SECRET / FIREBASE_API_KEY тохируулаагүй' });
   }
-  const rate = 2.6;
+  const rate = await krwToMnt();
   const done = [], failed = [];
-  async function one([name, query, hint, min]) {
+  for (const [name, query, hint] of CATALOG) {
     try {
-      const best = pick(await naver(query), hint, min);
-      if (!best) { failed.push([name, 'no items']); return; }
+      const best = pick(await naver(query), hint);
+      if (!best) { failed.push([name, 'no items']); continue; }
       const mnt = Math.round((best.krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000;
       await save(name, { query, krw: best.krw, mnt, rate, image: best.image, link: best.link, mall: best.mall });
       done.push({ name, krw: best.krw, mnt });
     } catch (e) {
       failed.push([name, String(e)]);
     }
-  }
-  for (let i = 0; i < CATALOG.length; i += 10) {
-    await Promise.all(CATALOG.slice(i, i + 10).map(one));
   }
   res.json({ rate, margin: MARGIN, updated: done.length, failed, done });
 }
