@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
   // Өдөр бүр дараагийн бараа: жилийн хэддэх өдрөөр каталогийг тойрно (давхардахгүй)
   const day = Math.floor(Date.now() / 86400000);
-  for (let attempt = 0; attempt < 10; attempt++) {
+  for (let attempt = 0; attempt < CATALOG.length; attempt++) {
     const item = CATALOG[(day + attempt) % CATALOG.length];
     const name = item[0];
     const p = await getPrice(name);
