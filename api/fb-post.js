@@ -31,9 +31,9 @@ async function getPrice(name) {
 }
 
 export default async function handler(req, res) {
-  const key = (req.query && req.query.key) || '';
-  const isCron = !!(req.headers && req.headers['x-vercel-cron']);
-  if (!isCron && process.env.SYNC_KEY && key !== process.env.SYNC_KEY) return res.status(401).json({ error: 'unauthorized' });
+  const { requireJobAuth } = await import('./_job-auth.js');
+  const auth = requireJobAuth(req);
+  if (!auth.ok) return res.status(401).json({ error: 'unauthorized' });
   const PAGE = process.env.FB_PAGE_ID, TOKEN = process.env.FB_PAGE_TOKEN;
   if (!PAGE || !TOKEN) return res.status(500).json({ error: 'FB_PAGE_ID / FB_PAGE_TOKEN тохируулаагүй' });
 

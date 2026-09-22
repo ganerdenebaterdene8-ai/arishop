@@ -68,11 +68,9 @@ async function save(name, doc) {
 }
 
 export default async function handler(req, res) {
-  const key = (req.query && req.query.key) || '';
-  const isCron = !!(req.headers && req.headers['x-vercel-cron']);
-  if (!isCron && process.env.SYNC_KEY && key !== process.env.SYNC_KEY) {
-    return res.status(401).json({ error: 'unauthorized' });
-  }
+  const { requireJobAuth } = await import('./_job-auth.js');
+  const auth = requireJobAuth(req);
+  if (!auth.ok) return res.status(401).json({ error: 'unauthorized' });
   if (!process.env.NAVER_ID || !process.env.NAVER_SECRET || !process.env.FIREBASE_API_KEY) {
     return res.status(500).json({ error: 'NAVER_ID / NAVER_SECRET / FIREBASE_API_KEY тохируулаагүй' });
   }
