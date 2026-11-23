@@ -1,0 +1,38 @@
+name: Өдрийн видео пост
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # өдөр бүр 20:00 Улаанбаатар (зурагтай пост 11:00-д)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Зөвхөн видео үүсгэх (Facebook-т тавихгүй)'
+        type: boolean
+        default: true
+
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: ffmpeg суулгах
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - name: Видео үүсгэж тавих
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '0' }}
+        run: node scripts/daily-video.mjs
+      - name: Видеог хадгалах
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-video
+          path: out/
+          if-no-files-found: ignore
+          retention-days: 7
