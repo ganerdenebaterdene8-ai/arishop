@@ -1,8 +1,6 @@
 {
   "crons": [
-    {
-      "path": "/api/sync-prices",
-      "schedule": "0 1 * * *"
-    }
+    { "path": "/api/sync-prices", "schedule": "0 1 * * *" },
+    { "path": "/api/fb-post", "schedule": "0 3 * * *" }
   ]
 }

@@ -111,15 +111,17 @@ async function main() {
   const CATALOG = await loadCatalog();
   fs.mkdirSync(OUT, { recursive: true });
   const day = Math.floor(Date.now() / 86400000);
+  // Зурагтай пост (api/fb-post.js) day-ээс эхэлдэг — видео өөр бараа гаргахын тулд каталогийн хагасаар зөрүүлнэ
+  const offset = Math.floor(CATALOG.length / 2);
   for (let attempt = 0; attempt < CATALOG.length; attempt++) {
-    const name = CATALOG[(day + attempt) % CATALOG.length][0];
+    const name = CATALOG[(day + offset + attempt) % CATALOG.length][0];
     const p = await getPrice(name);
     if (!p || !p.image || !p.mnt) continue;
     const img = await fetch(p.image);
     if (!img.ok) continue;
     const imagePath = path.join(OUT, 'product');
     fs.writeFileSync(imagePath, Buffer.from(await img.arrayBuffer()));
-    const hook = HOOKS[day % HOOKS.length];
+    const hook = HOOKS[(day + 2) % HOOKS.length];
     const video = render({ imagePath, name, mnt: p.mnt, hook, outFile: path.join(OUT, 'daily.mp4') });
     const caption =
       hook + ' 🇰🇷\n\n' +
