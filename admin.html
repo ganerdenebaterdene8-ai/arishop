@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>АриШоп · Захиалгууд</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:640px;margin:24px auto;padding:12px;color:#111}
+.row{display:flex;gap:8px}input{flex:1;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+button{padding:10px 14px;border-radius:8px;border:0;background:#111;color:#fff;font-size:15px}
+.card{border:1px solid #ddd;border-radius:10px;padding:12px;margin-top:12px}.meta{font-size:14px;color:#444;margin:6px 0}
+</style></head><body>
+<h1>АриШоп · Захиалгууд</h1>
+<div class="row"><input id="key" type="password" placeholder="Админ нууц үг"><button id="open">Нээх</button></div>
+<p id="msg"></p><div id="list"></div>
+<script>
+const STEPS=["Захиалга авсан","Төлбөр баталгаажсан","Солонгост худалдаж авсан","Монгол руу илгээсэн","Улаанбаатарт ирсэн","Хүлээлгэн өгсөн"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+try{$('key').value=localStorage.getItem('ari-admin')||''}catch(e){}
+let orders=[];
+async function load(){
+  const r=await fetch('/api/orders?all=1',{headers:{'x-admin-key':$('key').value}});
+  if(!r.ok){$('msg').textContent='Нууц үг буруу';return}
+  try{localStorage.setItem('ari-admin',$('key').value)}catch(e){}
+  orders=await r.json();
+  $('list').innerHTML=orders.length?orders.map((o,i)=>{const n=STEPS[STEPS.indexOf(o.status)+1];
+    return '<div class="card"><b>'+esc(o.id)+'</b> · '+esc(o.status)+'<div class="meta">'+esc(o.name)+' · '+esc(o.phone)+'<br>'+esc(o.address)+
+    '<br>'+Number(o.krw).toLocaleString()+'₩ → <b>'+Number(o.totalMnt).toLocaleString()+'₮</b>'+
+    (o.link&&/^https?:\/\//.test(o.link)?'<br><a target="_blank" rel="noopener" href="'+esc(o.link)+'">Барааны линк</a>':'')+'</div>'+
+    (n?'<button data-i="'+i+'">→ '+n+'</button>':'')+'</div>'}).join(''):'<p>Захиалга алга.</p>';
+}
+$('list').onclick=async e=>{
+  const i=e.target.dataset&&e.target.dataset.i;if(i===undefined)return;
+  const o=orders[i],next=STEPS[STEPS.indexOf(o.status)+1];
+  if(next==='Төлбөр баталгаажсан'&&!confirm(o.id+': '+Number(o.totalMnt).toLocaleString()+'₮ орсныг шалгасан уу?'))return;
+  e.target.disabled=true;
+  const r=await fetch('/api/orders',{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-key':$('key').value},body:JSON.stringify({id:o.id,status:next})});
+  const j=await r.json();
+  $('msg').textContent=o.id+' → '+next+(j.notified?' · Messenger-ээр мэдэгдлээ':' · 24 цаг өнгөрсөн тул зөвхөн хянах хуудсанд харагдана');
+  load();
+};
+$('open').onclick=load;
+</script></body></html>

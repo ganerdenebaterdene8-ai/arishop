@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Захиалга хянах · АриШоп</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:480px;margin:40px auto;padding:16px;color:#111}
+form{display:flex;gap:8px}input{flex:1;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:8px}
+button{padding:12px 18px;border-radius:8px;border:0;background:#111;color:#fff;font-size:16px}
+ol{list-style:none;padding:0}li{padding:10px 0}.off{opacity:.35}small{color:#666}.err{color:crimson}
+</style></head><body>
+<h1>📦 Захиалга хянах</h1>
+<form id="f"><input id="id" placeholder="ARI-1001" autocomplete="off"><button>Шалгах</button></form>
+<div id="out"></div>
+<p><a href="/">← АриШоп нүүр</a></p>
+<script>
+const STEPS=["Захиалга авсан","Төлбөр баталгаажсан","Солонгост худалдаж авсан","Монгол руу илгээсэн","Улаанбаатарт ирсэн","Хүлээлгэн өгсөн"];
+const out=document.getElementById('out'),inp=document.getElementById('id');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function look(q){
+  out.innerHTML='…';
+  const r=await fetch('/api/orders?id='+encodeURIComponent(q.trim()));
+  if(!r.ok){out.innerHTML='<p class="err">Захиалга олдсонгүй. Дугаараа шалгана уу.</p>';return}
+  const o=await r.json(),cur=STEPS.indexOf(o.status);
+  out.innerHTML='<p><b>'+esc(o.id)+'</b> · Дүн '+Number(o.totalMnt).toLocaleString()+'₮</p><ol>'+
+    STEPS.map((s,i)=>{const h=(o.history||[]).find(x=>x.status===s);
+      return '<li class="'+(i<=cur?'':'off')+'">'+(i<=cur?'✅':'⚪')+' '+s+(h?' <small>· '+new Date(h.at).toLocaleDateString()+'</small>':'')+'</li>'}).join('')+'</ol>';
+}
+document.getElementById('f').onsubmit=e=>{e.preventDefault();look(inp.value)};
+const q=new URLSearchParams(location.search).get('id');if(q){inp.value=q;look(q)}
+</script></body></html>
