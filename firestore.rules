@@ -1,0 +1,22 @@
+rules_version = '2';
+// Firebase console → Firestore Database → Rules хэсэгт хуулж "Publish" дарна.
+// АНХААР: админ хэсгийн «Хуучин захиалгыг шилжүүлэх» товчийг ЭХЛЭЭД дарж, дараа нь энэ дүрмийг нийтэлнэ.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Барааны үнэ (cron серверээс API key-ээр бичдэг) — нийтэд уншина
+    match /prices/{doc} {
+      allow read: if true;
+      allow write: if true;  // TODO: серверийг service account-аар бичдэг болгоод false болгох
+    }
+    // Барааны зураг (ажилтан сайтаас солих) — нийтэд уншина
+    match /images/{doc} {
+      allow read: if true;
+      allow write: if true;  // TODO: ажилтны зураг солихыг API руу шилжүүлээд false болгох
+    }
+    // Захиалга, ажилтан, сэтгэгдэл гэх мэт бусад бүх зүйл — хаалттай.
+    // (Захиалга одоо серверийн хаалттай Upstash Redis-д хадгалагдана.)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
