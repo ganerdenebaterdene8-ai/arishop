@@ -5,7 +5,6 @@
 // GET  /api/site-orders?reviews=1                          → баталгаажсан сэтгэгдлүүд (нийтэд)
 // POST { action: 'create', order }                         → { id, token, order }
 // POST { action: 'mine', refs: [{ id, token } | { id, phone }] } → өөрийн захиалгууд
-// POST { action: 'lookup', id, phone }                     → захиалгын явц (хаяггүй)
 // POST { action: 'received', id, token }                   → 5 → 6
 // POST { action: 'review', id, token, stars, text }        → сэтгэгдэл (шалгалт хүлээнэ)
 // --- ажилтан ---
@@ -16,6 +15,7 @@ import crypto from 'crypto';
 import { cmd, dbReady } from './_db.js';
 
 const PROJECT = process.env.FIREBASE_PROJECT || 'arishop-2671a';
+const REF_BONUS = Number(process.env.REF_BONUS || 1000);
 const LABELS = { 1: 'Захиалга баталгаажсан', 2: 'Дэлгүүрээс захиалсан', 3: 'Каргод өгсөн', 4: 'Монголд ирсэн', 5: 'Хэрэглэгчид хүргэсэн', 6: 'Хүлээж авсан ✓' };
 
 const str = (v, n = 300) => String(v == null ? '' : v).slice(0, n);
@@ -54,6 +54,7 @@ function cleanOrder(x) {
     customer: str(x.customer, 80) || 'Зочин',
     referrer: digits(x.referrer).slice(0, 12),
     consolidateWith: (Array.isArray(x.consolidateWith) ? x.consolidateWith : []).slice(0, 20).map((i) => str(i, 20)),
+    referralCredit: digits(x.referrer).length >= 8 ? Math.max(0, Math.min(REF_BONUS, Number(x.referralCredit) || 0)) : 0,
   };
 }
 
@@ -101,7 +102,10 @@ export default async function handler(req, res) {
         if ((await cmd('SET', 'sorder-id:' + cand, 1, 'NX')) === 'OK') { id = cand; break; }
       }
       if (!id) return res.status(500).json({ error: 'id' });
-      const order = { ...o, id, token: crypto.randomBytes(16).toString('hex'), status: 1, dates: { 1: stamp() }, created: Date.now(), cargoNo: '' };
+      // Найзын урамшуулал зөвхөн анхны захиалгад — өмнө захиалж байсан утас бол ажилтанд тэмдэглэнэ
+      const firstTime = (await cmd('SET', 'sphone:' + o.phone, id, 'NX')) === 'OK';
+      if (o.referrer === o.phone) { o.referrer = ''; o.referralCredit = 0; }
+      const order = { ...o, repeatCustomer: o.referralCredit > 0 && !firstTime, id, token: crypto.randomBytes(16).toString('hex'), status: 1, dates: { 1: stamp() }, created: Date.now(), cargoNo: '' };
       await putO(order);
       return res.json({ id, token: order.token, order: pub(order) });
     }
@@ -111,13 +115,6 @@ export default async function handler(req, res) {
       const out = [];
       for (const r of refs) { const o = await getO(r && r.id); if (owns(o, r || {})) out.push(pub(o)); }
       return res.json(out.sort((x, y) => (y.created || 0) - (x.created || 0)));
-    }
-
-    if (a === 'lookup') {
-      const o = await getO(b.id);
-      if (!o || digits(o.phone) !== digits(b.phone) || digits(b.phone).length < 8) return res.status(404).json({ error: 'Олдсонгүй' });
-      const { address, ...safe } = pub(o);
-      return res.json({ ...safe, legacyRef: o.legacy ? true : undefined });
     }
 
     if (a === 'received') {
@@ -134,6 +131,7 @@ export default async function handler(req, res) {
       const stars = Math.round(Number(b.stars));
       const text = str(b.text, 500).trim();
       if (!(stars >= 1 && stars <= 5) || text.length < 3) return res.status(400).json({ error: 'Од, тайлбар дутуу' });
+      if (await cmd('GET', 'review:' + o.id)) return res.status(409).json({ error: 'Энэ захиалгад сэтгэгдэл аль хэдийн үлдээсэн' });
       const r = { id: o.id, who: str(o.customer, 80).trim().split(/\s+/)[0] || 'Захиалагч', stars, text, created: Date.now() };
       await cmd('SET', 'review:' + o.id, JSON.stringify(r));
       await cmd('ZADD', 'reviews:pending', r.created, o.id);
