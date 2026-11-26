@@ -5,7 +5,7 @@ const TOKEN = () => process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_R
 
 export const dbReady = () => !!(URL() && TOKEN());
 
-async function cmd(...args) {
+export async function cmd(...args) {
   const r = await fetch(URL(), {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + TOKEN() },
