@@ -76,15 +76,20 @@ async function orders() {
 // 3) Каталог: үнэ/зураггүй, хуучирсан бараа
 async function catalog() {
   const CATALOG = await loadCatalog();
-  const missing = [], stale = [];
+  if (!process.env.FIREBASE_API_KEY) throw new Error('FIREBASE_API_KEY алга');
+  const missing = [], stale = [], failed = [];
   for (const [name] of CATALOG) {
     const r = await fetch(FS + encodeURIComponent(name) + '?key=' + process.env.FIREBASE_API_KEY);
-    if (!r.ok) { missing.push(name); continue; }
+    if (r.status === 404) { missing.push(name); continue; }
+    if (!r.ok) { failed.push(name + ' (' + r.status + ')'); continue; }
     const f = (await r.json()).fields || {};
     if (!f.image?.stringValue || !Number(f.mnt?.integerValue)) missing.push(name);
     else if (now - Number(f.updated?.integerValue || 0) > 3 * 86400000) stale.push(name);
   }
-  return { total: CATALOG.length, missingPriceOrImage: missing, staleOver3Days: stale };
+  // Firestore-ийн 404 бус алдаа (429/5xx/буруу түлхүүр) — "бараа алга" гэж буруу дүгнэхээс сэргийлнэ
+  if (failed.length > CATALOG.length / 2) throw new Error('Firestore олон алдаа: ' + failed.slice(0, 3).join(', '));
+  if (failed.length) out.errors.push('catalog: Firestore алдаа ' + failed.length + ' бараанд: ' + failed.slice(0, 5).join(', '));
+  return { total: CATALOG.length, missingPriceOrImage: missing, staleOver3Days: stale, fetchFailed: failed };
 }
 
 for (const [k, fn] of [['facebook', facebook], ['orders', orders], ['catalog', catalog]]) {
