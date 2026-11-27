@@ -1,0 +1,46 @@
+name: Ботын долоо хоногийн статистик
+
+# Ням гараг бүр 18:00 Улаанбаатар (10:00 UTC). Claude-ийн хуваарьт бот 19:00 Сөүл-д үүнийг уншина.
+on:
+  schedule:
+    - cron: '0 10 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Статистик цуглуулах
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
+          KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
+        run: node scripts/collect-stats.mjs
+      - name: bot-data салбарт хадгалах
+        run: |
+          cp reports/stats.json /tmp/stats.json && rm -rf reports
+          git config user.name "arishop-bot"
+          git config user.email "arishop-bot@users.noreply.github.com"
+          git fetch origin bot-data || true
+          if git rev-parse --verify origin/bot-data >/dev/null 2>&1; then
+            git checkout -B bot-data origin/bot-data
+          else
+            git checkout --orphan bot-data
+            git rm -rf . >/dev/null
+          fi
+          mkdir -p reports/history
+          cp /tmp/stats.json reports/stats.json
+          cp /tmp/stats.json "reports/history/$(date -u +%F).json"
+          git add reports
+          git commit -m "Долоо хоногийн статистик $(date -u +%F)" || echo "өөрчлөлтгүй"
+          git push origin bot-data
