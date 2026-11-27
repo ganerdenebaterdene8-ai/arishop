@@ -5,6 +5,7 @@
 //   FB_PAGE_TOKEN   — Page Access Token (доорх зааврын дагуу авна)
 //   FIREBASE_API_KEY — аль хэдийн байгаа
 import CATALOG from './_catalog.js';
+import QUEUE from './_queue.js';
 
 const PROJECT = 'arishop-2671a';
 const FS = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/prices/';
@@ -37,7 +38,25 @@ export default async function handler(req, res) {
   const PAGE = process.env.FB_PAGE_ID, TOKEN = process.env.FB_PAGE_TOKEN;
   if (!PAGE || !TOKEN) return res.status(500).json({ error: 'FB_PAGE_ID / FB_PAGE_TOKEN тохируулаагүй' });
 
-  // Өдөр бүр дараагийн бараа: жилийн хэддэх өдрөөр каталогийг тойрно (давхардахгүй)
+  // 1) Бот бэлдсэн өнөөдрийн пост (api/_queue.js) байвал түүнийг тавина
+  const ubDate = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
+  const q = QUEUE[ubDate];
+  if (q && q.product && q.caption) {
+    const p = await getPrice(q.product);
+    if (p && p.image && p.mnt) {
+      const caption = q.caption.replace(/\{price\}/g, fmt(p.mnt) + '₮').replace(/\{site\}/g, SITE);
+      const r = await fetch('https://graph.facebook.com/v21.0/' + PAGE + '/photos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: p.image, caption, access_token: TOKEN }),
+      });
+      const d = await r.json();
+      if (!r.ok) return res.status(500).json({ error: 'facebook', detail: d });
+      return res.json({ posted: q.product, mnt: p.mnt, source: 'queue', post_id: d.post_id || d.id });
+    }
+  }
+
+  // 2) Үгүй бол: жилийн хэддэх өдрөөр каталогийг тойрно (давхардахгүй)
   const day = Math.floor(Date.now() / 86400000);
   for (let attempt = 0; attempt < CATALOG.length; attempt++) {
     const item = CATALOG[(day + attempt) % CATALOG.length];
