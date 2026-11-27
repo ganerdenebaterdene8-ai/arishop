@@ -5,6 +5,7 @@ const FS = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databas
 
 // [сайт дээрх барааны нэр, Naver хайлтын үг, санамсаргүй хямд/хуурамч зарыг шүүх түлхүүр]
 import CATALOG from './_catalog.js';
+import { allowed } from './_auth.js';
 
 const MARGIN = Number(process.env.MARGIN || 0.15);      // таны маржин
 const SHIP_MNT = Number(process.env.SHIP_MNT || 0);     // барааны тээврийн нэмэлт (хүсвэл)
@@ -33,7 +34,7 @@ async function naver(q) {
     link: i.link || '',
     brand: String(i.brand || i.maker || '').toLowerCase(),
     mall: i.mallName || '',
-  })).filter((i) => i.krw > 0);
+  })).filter((i) => i.krw > 0 && i.image);
 }
 
 // хэт хямд (хэрэгсэл/хуурамч) зарыг шүүх: медианы 40%-иас доошийг хаяна
@@ -68,26 +69,31 @@ async function save(name, doc) {
 }
 
 export default async function handler(req, res) {
-  const key = (req.query && req.query.key) || '';
-  const isCron = !!(req.headers && req.headers['x-vercel-cron']);
-  if (!isCron && process.env.SYNC_KEY && key !== process.env.SYNC_KEY) {
-    return res.status(401).json({ error: 'unauthorized' });
-  }
+  if (!allowed(req)) return res.status(401).json({ error: 'unauthorized' });
   if (!process.env.NAVER_ID || !process.env.NAVER_SECRET || !process.env.FIREBASE_API_KEY) {
     return res.status(500).json({ error: 'NAVER_ID / NAVER_SECRET / FIREBASE_API_KEY тохируулаагүй' });
   }
   const rate = await krwToMnt();
   const done = [], failed = [];
-  for (const [name, query, hint] of CATALOG) {
+  const one = async ([name, query, hint]) => {
     try {
-      const best = pick(await naver(query), hint);
-      if (!best) { failed.push([name, 'no items']); continue; }
+      let best = pick(await naver(query), hint);
+      // Олдохгүй бол хайлтын үгийг богиносгож дахин оролдоно (эхний 2 үг)
+      if (!best) {
+        const short = query.split(/\s+/).slice(0, 2).join(' ');
+        if (short !== query) best = pick(await naver(short), hint);
+      }
+      if (!best || !best.image) { failed.push([name, 'no items']); return; }
       const mnt = Math.round((best.krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000;
       await save(name, { query, krw: best.krw, mnt, rate, image: best.image, link: best.link, mall: best.mall });
       done.push({ name, krw: best.krw, mnt });
     } catch (e) {
       failed.push([name, String(e)]);
     }
+  };
+  // 5-аар нь зэрэг (Naver API секундэд 10 хүсэлтийн хязгаартай)
+  for (let i = 0; i < CATALOG.length; i += 5) {
+    await Promise.all(CATALOG.slice(i, i + 5).map(one));
   }
   res.json({ rate, margin: MARGIN, updated: done.length, failed, done });
 }
