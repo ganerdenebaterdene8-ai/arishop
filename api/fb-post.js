@@ -6,6 +6,7 @@
 //   FIREBASE_API_KEY — аль хэдийн байгаа
 import CATALOG from './_catalog.js';
 import QUEUE from './_queue.js';
+import { allowed } from './_auth.js';
 
 const PROJECT = 'arishop-2671a';
 const FS = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/prices/';
@@ -32,9 +33,7 @@ async function getPrice(name) {
 }
 
 export default async function handler(req, res) {
-  const key = (req.query && req.query.key) || '';
-  const isCron = !!(req.headers && req.headers['x-vercel-cron']);
-  if (!isCron && process.env.SYNC_KEY && key !== process.env.SYNC_KEY) return res.status(401).json({ error: 'unauthorized' });
+  if (!allowed(req)) return res.status(401).json({ error: 'unauthorized' });
   const PAGE = process.env.FB_PAGE_ID, TOKEN = process.env.FB_PAGE_TOKEN;
   if (!PAGE || !TOKEN) return res.status(500).json({ error: 'FB_PAGE_ID / FB_PAGE_TOKEN тохируулаагүй' });
 
