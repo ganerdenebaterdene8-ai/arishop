@@ -116,7 +116,7 @@ export default async function handler(req, res) {
   const links = shopLinks(query, raw);
   let hint = tr.leftoverCyrillic ? 'Зарим үгийг орчуулж чадсангүй — солонгос эсвэл англиар бичвэл илүү олдоно.' : '';
   if (!items.length && errors.length) {
-    hint = 'Шууд хайлт одоохондоо ажиллахгүй байна. Messenger-ээр хүсэлтээ илгээгээрэй — бид Солонгосоос хайж, үнийг нь хэлж өгнө. Эсвэл дэлгүүрээс өөрөө олоод холбоосыг нь илгээж болно (дэлгүүр "봇 확인" шалгалт гаргаж магадгүй).';
+    hint = 'Шууд хайлт одоохондоо ажиллахгүй байна. Messenger-ээр хүсэлтээ илгээгээрэй — бид Солонгосоос хайж, үнийг нь хэлж өгнө. Эсвэл Olive Young, Musinsa-аас өөрөө олоод холбоосыг нь илгээж болно.';
   }
   res.setHeader('Cache-Control', items.length ? 's-maxage=3600, stale-while-revalidate=86400' : 'no-store');
   res.json({ query: raw, searched: query, source, count: items.length, items, links, hint, errors });
