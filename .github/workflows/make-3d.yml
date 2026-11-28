@@ -1,0 +1,43 @@
+name: Барааны 360° 3D загвар
+
+# Өдөр бүр 11:30 Улаанбаатар (03:30 UTC) — sync-prices (01:00 UTC) шинэ зураг татсаны дараа.
+# Гараар: Actions → "Барааны 360° 3D загвар" → Run workflow.
+on:
+  schedule:
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+    inputs:
+      max_new:
+        description: 'Энэ удаа хэдэн шинэ загвар үүсгэх (1 загвар ≈ 30 Meshy кредит)'
+        default: '5'
+      only:
+        description: 'Зөвхөн энэ барааг (сайт дээрх нэрээр нь) үүсгэх/дахин үүсгэх — хоосон бол бүгд'
+        default: ''
+      remove:
+        description: 'Энэ барааны 3D-г сайтаас нуух (чанар муу гарсан үед) — сайт дээрх нэрээр нь'
+        default: ''
+
+concurrency:
+  group: make-3d
+  cancel-in-progress: false
+
+jobs:
+  models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Хэрэгслүүд суулгах
+        run: npm i --no-save --no-audit --no-fund @vercel/blob@2 @gltf-transform/cli@4
+      - name: 3D загвар үүсгэх
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          MAX_NEW: ${{ inputs.max_new || vars.MESHY_MAX_PER_DAY || '5' }}
+          ONLY: ${{ inputs.only }}
+          REMOVE: ${{ inputs.remove }}
+        run: node scripts/make-3d.mjs
