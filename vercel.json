@@ -6,5 +6,10 @@
   "rewrites": [
     { "source": "/track", "destination": "/track.html" },
     { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "headers": [
+    { "source": "/", "headers": [{ "key": "Cache-Control", "value": "no-cache, must-revalidate" }] },
+    { "source": "/index.html", "headers": [{ "key": "Cache-Control", "value": "no-cache, must-revalidate" }] },
+    { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, must-revalidate" }] }
   ]
 }
