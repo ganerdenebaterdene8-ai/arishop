@@ -34,12 +34,18 @@ async function loadCatalog() {
 
 const fmt = (n) => Number(n).toLocaleString('en-US');
 
+// Үнэ хэдэн хоногоос хуучин бол видео, текстэд тоо бичихгүй (api/fb-post.js-тэй ижил дүрэм;
+// Naver Shopping API 2026-07-31-нд хаагдсанаас хойш үнэ шинэчлэгдэхгүй байж болзошгүй)
+const STALE_DAYS = Number(process.env.PRICE_STALE_DAYS || 3);
+const isFresh = (p) => !!(p && p.updated && Date.now() - p.updated < STALE_DAYS * 86400000);
+const priceText = (p) => (isFresh(p) ? fmt(p.mnt) + '₮' : 'Үнийг DM-ээр асуугаарай');
+
 async function getPrice(name) {
   const r = await fetch(FS + encodeURIComponent(name) + '?key=' + process.env.FIREBASE_API_KEY);
   if (!r.ok) return null;
   const f = (await r.json()).fields || {};
   const val = (x) => (x ? (x.stringValue ?? Number(x.integerValue ?? x.doubleValue)) : undefined);
-  return { image: val(f.image), mnt: val(f.mnt) };
+  return { image: val(f.image), mnt: val(f.mnt), updated: Number(val(f.updated)) || 0 };
 }
 
 function wrap(text, max) {
@@ -53,14 +59,14 @@ function wrap(text, max) {
   return lines.slice(0, 3).join('\n');
 }
 
-export function render({ imagePath, name, mnt, hook, outFile }) {
+export function render({ imagePath, name, mnt, price, hook, outFile }) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vid-'));
   const t = (file, s) => { const p = path.join(dir, file); fs.writeFileSync(p, s); return p; };
   const files = {
     brand: t('brand.txt', 'АРИШОП  ·  Солонгосоос'),
     hook: t('hook.txt', wrap(hook, 22)),
     name: t('name.txt', wrap(name, 22)),
-    price: t('price.txt', fmt(mnt) + '₮'),
+    price: t('price.txt', price || fmt(mnt) + '₮'),
     ship: t('ship.txt', DELIVERY),
     cta: t('cta.txt', 'arishopkorea.mn  ·  DM бичээрэй'),
   };
@@ -122,11 +128,11 @@ async function main() {
     const imagePath = path.join(OUT, 'product');
     fs.writeFileSync(imagePath, Buffer.from(await img.arrayBuffer()));
     const hook = HOOKS[(day + 2) % HOOKS.length];
-    const video = render({ imagePath, name, mnt: p.mnt, hook, outFile: path.join(OUT, 'daily.mp4') });
+    const video = render({ imagePath, name, mnt: p.mnt, price: isFresh(p) ? fmt(p.mnt) + '₮' : 'Үнэ: DM-ээр', hook, outFile: path.join(OUT, 'daily.mp4') });
     const caption =
       hook + ' 🇰🇷\n\n' +
       '📦 ' + name + '\n' +
-      '💰 Үнэ: ' + fmt(p.mnt) + '₮\n' +
+      '💰 Үнэ: ' + priceText(p) + '\n' +
       '🚚 ' + DELIVERY + '\n' +
       '💳 QPay / Хаан банк\n\n' +
       'Захиалга өгөх: ' + SITE + '\n' +
@@ -135,7 +141,7 @@ async function main() {
     fs.writeFileSync(path.join(OUT, 'caption.txt'), caption);
     if (DRY) { console.log('DRY_RUN — видео үүссэн, тавиагүй:', name); return; }
     const id = await postVideo(video, caption);
-    console.log('Тавьсан:', name, fmt(p.mnt) + '₮', 'video id', id);
+    console.log('Тавьсан:', name, priceText(p), 'video id', id);
     return;
   }
   throw new Error('зураг/үнэтэй бараа олдсонгүй — эхлээд /api/sync-prices ажиллуулна уу');
