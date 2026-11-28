@@ -40,11 +40,11 @@ export function toKorean(q) {
 
 const clean = (t) => String(t || '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
 
+// Coupang-ийн вэб нь Солонгосоос гадуурх IP-г "Access Denied" гэж хаадаг тул жагсаалтад оруулаагүй.
 // Хайлтын эх сурвалж бүтэлгүйтвэл хэрэглэгчид Солонгосын дэлгүүрүүдийн хайлтын холбоосыг өгнө (үргэлж ажиллана)
 const shopLinks = (ko) => {
   const q = encodeURIComponent(ko);
   return [
-    { label: 'Coupang', url: 'https://www.coupang.com/np/search?q=' + q },
     { label: 'Naver Shopping', url: 'https://search.shopping.naver.com/search/all?query=' + q },
     { label: 'Gmarket', url: 'https://www.gmarket.co.kr/n/search?keyword=' + q },
     { label: 'Olive Young', url: 'https://www.oliveyoung.co.kr/store/search/getSearchMain.do?query=' + q },
