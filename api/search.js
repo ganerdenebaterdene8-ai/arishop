@@ -40,15 +40,20 @@ export function toKorean(q) {
 
 const clean = (t) => String(t || '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
 
-// Coupang-ийн вэб нь Солонгосоос гадуурх IP-г "Access Denied" гэж хаадаг тул жагсаалтад оруулаагүй.
+// Coupang ("Access Denied") болон Naver Shopping ("접속 제한") нь гаднаас орж ирсэн холбоосыг хаадаг тул жагсаалтад оруулаагүй.
 // Хайлтын эх сурвалж бүтэлгүйтвэл хэрэглэгчид Солонгосын дэлгүүрүүдийн хайлтын холбоосыг өгнө (үргэлж ажиллана)
-const shopLinks = (ko) => {
+const PAGE_ID = process.env.FB_PAGE_ID || '100068325606493';
+const shopLinks = (ko, raw) => {
   const q = encodeURIComponent(ko);
+  const msg = encodeURIComponent('Сайн байна уу! "' + raw + '" (' + ko + ') бараа захиалмаар байна. Үнийг нь хэлж өгнө үү.');
   return [
-    { label: 'Naver Shopping', url: 'https://search.shopping.naver.com/search/all?query=' + q },
-    { label: 'Gmarket', url: 'https://www.gmarket.co.kr/n/search?keyword=' + q },
+    // Хамгийн найдвартай: Messenger-ээр хүсэлт — манай DM бот/ажилтан Солонгосоос хайж өгнө
+    { label: '💬 Messenger-ээр хүсэлт илгээх', url: 'https://m.me/' + PAGE_ID + '?text=' + msg, primary: true },
+    // Olive Young, Musinsa — Монголоос нээгддэг (2026-11-28 эзэн шалгасан)
     { label: 'Olive Young', url: 'https://www.oliveyoung.co.kr/store/search/getSearchMain.do?query=' + q },
     { label: 'Musinsa', url: 'https://www.musinsa.com/search/goods?keyword=' + q },
+    // Gmarket гаднаас орж ирэхэд "봇 확인" шалгалт гаргадаг (2026-11-28 эзэн шалгасан)
+    { label: 'Gmarket', url: 'https://www.gmarket.co.kr/n/search?keyword=' + q },
   ];
 };
 
@@ -108,10 +113,10 @@ export default async function handler(req, res) {
   items = items
     .map((i) => ({ ...i, mnt: Math.round((i.krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000 }))
     .filter((i) => i.krw >= 1000 && /^https:\/\//.test(i.image) && /^https:\/\//.test(i.link));
-  const links = shopLinks(query);
+  const links = shopLinks(query, raw);
   let hint = tr.leftoverCyrillic ? 'Зарим үгийг орчуулж чадсангүй — солонгос эсвэл англиар бичвэл илүү олдоно.' : '';
   if (!items.length && errors.length) {
-    hint = 'Шууд хайлт одоохондоо ажиллахгүй байна. Доорх дэлгүүрээс бараагаа олоод холбоосыг нь чатаар илгээгээрэй — бид үнийг нь бодож захиалж өгнө.';
+    hint = 'Шууд хайлт одоохондоо ажиллахгүй байна. Messenger-ээр хүсэлтээ илгээгээрэй — бид Солонгосоос хайж, үнийг нь хэлж өгнө. Эсвэл Olive Young, Musinsa-аас өөрөө олоод холбоосыг нь илгээж болно.';
   }
   res.setHeader('Cache-Control', items.length ? 's-maxage=3600, stale-while-revalidate=86400' : 'no-store');
   res.json({ query: raw, searched: query, source, count: items.length, items, links, hint, errors });
