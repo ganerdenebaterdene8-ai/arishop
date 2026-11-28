@@ -1,3 +1,4 @@
+// detail-тэй
 // Түр судалгаа: Olive Young / Musinsa-гийн эрэлттэй бараа Naver Shopping-аар (сайтын /api/price) олдох эсэх
 import fs from 'node:fs';
 const SITE = 'https://arishopkorea.vercel.app/api/price?q=';
@@ -18,7 +19,7 @@ for (const [src, q] of Q) {
   const malls = [...new Set(items.map((i) => i.mall).filter(Boolean))];
   const prices = items.map((i) => i.krw).sort((a, b) => a - b);
   rows.push({ src, q, count: items.length, withImage: items.filter((i) => i.image).length, malls,
-    min: prices[0] || 0, median: prices[Math.floor(prices.length / 2)] || 0, top: (items[0] || {}).title || '', error: d.error || '' });
+    min: prices[0] || 0, median: prices[Math.floor(prices.length / 2)] || 0, top: (items[0] || {}).title || '', error: d.error ? String(d.error) + ' ' + String(d.detail || '').slice(0, 300) : '' });
   await new Promise((r) => setTimeout(r, 400));
 }
 fs.mkdirSync('reports', { recursive: true });
