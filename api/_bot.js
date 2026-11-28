@@ -1,5 +1,6 @@
 // DM-ийн дүрэмд суурилсан монгол хариулагч (AI-гүй — найдвартай, үнэгүй)
 import { calcQuote, parseKrw, parseWeight, quoteText, fmt } from './_pricing.js';
+import { priceFromLink } from './_linkprice.js';
 import { getSession, setSession, clearSession, getOrder, newOrderId, saveOrder, pauseBot } from './_db.js';
 
 const SITE = process.env.SITE_URL || 'https://arishopkorea.vercel.app';
@@ -97,8 +98,24 @@ export async function handleMessage(psid, raw) {
     return quoteText(q, DAYS);
   }
   if (link) {
+    // Холбоосоос үнийг автоматаар олохыг оролдоно (зарим дэлгүүр гаднаас хаадаг тул олдохгүй байж болно)
+    const found = await priceFromLink(link);
+    if (found) {
+      const q = await calcQuote(found.krw, parseWeight(text));
+      await setSession(psid, { step: 'quoted', krw: found.krw, totalMnt: q.totalMnt, link });
+      return (found.title ? '🛍 ' + found.title + '\n' : '') + quoteText(q, DAYS) +
+        '\n\n(Үнийг холбоосоос автоматаар уншсан. Өөр сонголт/хэмжээ бол вон дээрх үнийг бичээрэй.)';
+    }
     await setSession(psid, { step: 'quoted', krw: 0, totalMnt: 0, link });
     return 'Линк хүлээж авлаа 👍 Сайт дээр харагдаж байгаа үнийг вон-оор бичээрэй (жишээ: 35000вон).';
+  }
+
+  // 4б. Сайтын "Солонгосоос хайх" → "Messenger-ээр хүсэлт илгээх" товчоор ирсэн мессеж
+  if (has(t, ['үнийг нь хэлж өгнө үү']) && has(t, ['захиалмаар'])) {
+    return [
+      'Хүсэлтийг хүлээж авлаа 🙏 Ажилтан Солонгосоос хайгаад үнийг удахгүй хэлнэ.',
+      'Хурдан бол: барааны линкийг илгээгээрэй (Olive Young, Musinsa, Gmarket…) — үнийг шууд бодоод өгье.',
+    ].join('\n');
   }
 
   // 5. Түгээмэл асуулт
