@@ -93,6 +93,45 @@ export function render({ imagePath, name, mnt, hook, outFile }) {
   return outFile;
 }
 
+
+// Каталогийн хэсгийн тайлбараас ангилал (видеоны HUD-д харагдана)
+const SECTION_LABELS = [
+  [/olive young/i, 'ГОО САЙХАН'], [/musinsa/i, 'ЗАГВАР'], [/gmarket|daiso/i, 'ГЭР АХУЙ'],
+  [/kream/i, 'ПҮҮЗ'], [/ably|zigzag/i, 'ХУВЦАС'], [/danawa/i, 'ЭЛЕКТРОН'],
+];
+function categoryOf(name) {
+  const src = fs.readFileSync(path.join(ROOT, 'api/_catalog.js'), 'utf8');
+  let cat = 'ДРОН';
+  for (const line of src.split('\n')) {
+    const c = line.match(/^\s*\/\/\s*(.+)/);
+    if (c) { const hit = SECTION_LABELS.find(([re]) => re.test(c[1])); if (hit) cat = hit[1]; continue; }
+    if (line.includes("['" + name.replace(/'/g, "\\'") + "'")) return cat;
+  }
+  return 'СОЛОНГОС БАРАА';
+}
+
+// Remotion-оор мэргэжлийн хөдөлгөөнт видео (video/ хавтас). Алдаа гарвал ffmpeg загвар руу буцна.
+function imageExt(buf) {
+  if (buf[0] === 0x89 && buf[1] === 0x50) return '.png';
+  if (buf.slice(8, 12).toString() === 'WEBP') return '.webp';
+  if (buf.slice(0, 3).toString() === 'GIF') return '.gif';
+  return '.jpg';
+}
+export function renderRemotion({ imagePath, name, mnt, hook, category, outFile }) {
+  const VDIR = path.join(ROOT, 'video');
+  const buf = fs.readFileSync(imagePath);
+  const img = 'product' + imageExt(buf);
+  fs.mkdirSync(path.join(VDIR, 'public'), { recursive: true });
+  fs.writeFileSync(path.join(VDIR, 'public', img), buf);
+  const props = { image: img, name, price: Number(mnt), hook, category, delivery: DELIVERY, site: 'arishopkorea.mn' };
+  const propsFile = path.join(OUT, 'props.json');
+  fs.writeFileSync(propsFile, JSON.stringify(props));
+  const args = ['remotion', 'render', 'src/index.ts', 'Daily', outFile, '--props=' + propsFile, '--codec=h264', '--crf=20'];
+  if (process.env.REMOTION_BROWSER) args.push('--browser-executable=' + process.env.REMOTION_BROWSER);
+  execFileSync('npx', args, { cwd: VDIR, stdio: 'inherit' });
+  return outFile;
+}
+
 async function postVideo(file, description) {
   const PAGE = process.env.FB_PAGE_ID, TOKEN = process.env.FB_PAGE_TOKEN;
   if (!PAGE || !TOKEN) throw new Error('FB_PAGE_ID / FB_PAGE_TOKEN тохируулаагүй');
@@ -122,7 +161,15 @@ async function main() {
     const imagePath = path.join(OUT, 'product');
     fs.writeFileSync(imagePath, Buffer.from(await img.arrayBuffer()));
     const hook = HOOKS[(day + 2) % HOOKS.length];
-    const video = render({ imagePath, name, mnt: p.mnt, hook, outFile: path.join(OUT, 'daily.mp4') });
+    const outFile = path.join(OUT, 'daily.mp4');
+    let video;
+    try {
+      video = renderRemotion({ imagePath, name, mnt: p.mnt, hook, category: categoryOf(name), outFile });
+      console.log('Remotion видео бэлэн');
+    } catch (e) {
+      console.error('Remotion алдаа, энгийн загвараар хийнэ:', e.message || e);
+      video = render({ imagePath, name, mnt: p.mnt, hook, outFile });
+    }
     const caption =
       hook + ' 🇰🇷\n\n' +
       '📦 ' + name + '\n' +
