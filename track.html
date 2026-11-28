@@ -1,28 +1,75 @@
 <!DOCTYPE html>
 <html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Захиалга хянах · АриШоп</title>
+<meta name="description" content="АриШоп-ын захиалгынхаа явцыг дугаараар нь шалгаарай: Солонгост худалдан авсан, Монгол руу илгээсэн, Улаанбаатарт ирсэн.">
+<meta name="theme-color" content="#E5372B">
+<link rel="icon" href="/icon-192.png">
+<meta property="og:title" content="Захиалга хянах · АриШоп">
+<meta property="og:image" content="https://arishopkorea.vercel.app/og-image.jpg">
 <style>
-body{font-family:system-ui,sans-serif;max-width:480px;margin:40px auto;padding:16px;color:#111}
-form{display:flex;gap:8px}input{flex:1;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:8px}
-button{padding:12px 18px;border-radius:8px;border:0;background:#111;color:#fff;font-size:16px}
-ol{list-style:none;padding:0}li{padding:10px 0}.off{opacity:.35}small{color:#666}.err{color:crimson}
+:root{--bg:#f5f6f8;--card:#fff;--ink:#17181a;--muted:#6b6f76;--accent:#E5372B;--line:#e7e8ec;--ok:#13A05A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink)}
+main{max-width:520px;margin:0 auto;padding:28px 16px 40px}
+h1{font-size:26px;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 20px;font-size:15px}
+form{display:flex;gap:8px}
+input{flex:1;min-width:0;padding:14px;font-size:16px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-transform:uppercase}
+input:focus{outline:none;border-color:var(--accent)}
+button{padding:14px 20px;border-radius:14px;border:0;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.card{background:var(--card);border-radius:22px;padding:20px;margin-top:20px;box-shadow:0 6px 24px rgba(90,50,20,.08)}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.head b{font-size:19px}.head span{color:var(--muted);font-size:14px}
+.bar{height:8px;background:var(--line);border-radius:99px;margin:16px 0 6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .6s}
+.now{font-weight:700;color:var(--accent);margin:0 0 4px;font-size:15px}
+.eta{color:var(--muted);font-size:13.5px;margin:0}
+ol{list-style:none;padding:0;margin:18px 0 0}
+li{display:flex;gap:14px;position:relative;padding-bottom:18px}
+li:last-child{padding-bottom:0}
+li:not(:last-child)::before{content:"";position:absolute;left:15px;top:32px;bottom:2px;width:2px;background:var(--line)}
+li.done:not(:last-child)::before{background:var(--ok)}
+.dot{flex:0 0 32px;height:32px;border-radius:50%;display:grid;place-content:center;font-size:15px;background:#fff;border:2px solid var(--line);z-index:1}
+li.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+li.cur .dot{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 5px rgba(229,55,43,.18)}
+.txt{padding-top:5px}.txt b{display:block;font-size:15px}.txt small{color:var(--muted);font-size:13px}
+li.todo .txt b{color:#b9a48f;font-weight:500}
+.err{color:#b3261e;background:#fdecea;border-radius:14px;padding:14px;margin-top:20px}
+.help{font-size:14px;color:var(--muted);margin-top:22px;line-height:1.5}
+a{color:var(--accent)}
 </style></head><body>
+<main>
 <h1>📦 Захиалга хянах</h1>
-<form id="f"><input id="id" placeholder="ARI-1001" autocomplete="off"><button>Шалгах</button></form>
-<div id="out"></div>
-<p><a href="/">← АриШоп нүүр</a></p>
+<p class="sub">Захиалгын дугаараа оруулна уу (жишээ: ARI-1001)</p>
+<form id="f"><input id="id" placeholder="ARI-1001" autocomplete="off" aria-label="Захиалгын дугаар"><button>Шалгах</button></form>
+<div id="out" aria-live="polite"></div>
+<p class="help">Асуулт байвал Facebook пэйжийн Messenger-ээр бичээрэй.<br><a href="/">← АриШоп нүүр хуудас</a></p>
+</main>
 <script>
+// Төлөвүүд api/orders.js-ийн STATUSES-тэй яг ижил байх ёстой
 const STEPS=["Захиалга авсан","Төлбөр баталгаажсан","Солонгост худалдаж авсан","Монгол руу илгээсэн","Улаанбаатарт ирсэн","Хүлээлгэн өгсөн"];
+const ICONS=["📝","💳","🛍️","✈️","🏙️","🎉"];
 const out=document.getElementById('out'),inp=document.getElementById('id');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const day=t=>{const d=new Date(t);return (d.getMonth()+1)+'-р сарын '+d.getDate()};
 async function look(q){
-  out.innerHTML='…';
-  const r=await fetch('/api/orders?id='+encodeURIComponent(q.trim()));
-  if(!r.ok){out.innerHTML='<p class="err">Захиалга олдсонгүй. Дугаараа шалгана уу.</p>';return}
-  const o=await r.json(),cur=STEPS.indexOf(o.status);
-  out.innerHTML='<p><b>'+esc(o.id)+'</b> · Дүн '+Number(o.totalMnt).toLocaleString()+'₮</p><ol>'+
-    STEPS.map((s,i)=>{const h=(o.history||[]).find(x=>x.status===s);
-      return '<li class="'+(i<=cur?'':'off')+'">'+(i<=cur?'✅':'⚪')+' '+s+(h?' <small>· '+new Date(h.at).toLocaleDateString()+'</small>':'')+'</li>'}).join('')+'</ol>';
+  q=q.trim().toUpperCase();if(!q)return;
+  out.innerHTML='<div class="card">Шалгаж байна…</div>';
+  let o;
+  try{const r=await fetch('/api/orders?id='+encodeURIComponent(q));if(!r.ok)throw 0;o=await r.json()}
+  catch(e){out.innerHTML='<p class="err">Захиалга олдсонгүй. Дугаараа шалгаад дахин оролдоно уу.</p>';return}
+  const cur=Math.max(0,STEPS.indexOf(o.status)),hist=o.history||[];
+  const at=s=>(hist.find(x=>x.status===s)||{}).at;
+  const start=at(STEPS[0]);
+  let eta='';
+  if(cur>=5)eta='Захиалга хүлээлгэн өгөгдсөн. Баярлалаа! 💛';
+  else if(start)eta='Ихэвчлэн захиалснаас хойш 7–14 хоногт ирдэг · таамаг: '+day(start+7*864e5)+' – '+day(start+14*864e5);
+  out.innerHTML='<div class="card"><div class="head"><b>'+esc(o.id)+'</b><span>'+Number(o.totalMnt||0).toLocaleString('en-US')+'₮</span></div>'+
+    '<div class="bar"><i style="width:'+Math.round(cur/(STEPS.length-1)*100)+'%"></i></div>'+
+    '<p class="now">'+ICONS[cur]+' '+esc(STEPS[cur])+'</p>'+(eta?'<p class="eta">'+esc(eta)+'</p>':'')+
+    '<ol>'+STEPS.map((s,i)=>{const t=at(s),cls=i<cur?'done':i===cur?(cur>=5?'done':'cur'):'todo';
+      return '<li class="'+cls+'"><span class="dot">'+(i<cur||(i===cur&&cur>=5)?'✓':ICONS[i])+'</span><span class="txt"><b>'+esc(s)+'</b>'+(t?'<small>'+day(t)+'</small>':'')+'</span></li>'}).join('')+'</ol></div>';
+  history.replaceState(null,'','?id='+encodeURIComponent(q));
 }
 document.getElementById('f').onsubmit=e=>{e.preventDefault();look(inp.value)};
 const q=new URLSearchParams(location.search).get('id');if(q){inp.value=q;look(q)}
