@@ -22,6 +22,12 @@ const HOOKS = [
 
 function fmt(n) { return Number(n).toLocaleString('mn-MN'); }
 
+// Үнэ хэдэн хоногоос хуучин бол постонд тоо бичихгүй (Naver Shopping API 2026-07-31-нд хаагдсанаас хойш
+// үнэ шинэчлэгдэхгүй байж болзошгүй — хуучин ханш/үнийг олон нийтэд зарлахгүй)
+const STALE_DAYS = Number(process.env.PRICE_STALE_DAYS || 3);
+const isFresh = (p) => !!(p && p.updated && Date.now() - p.updated < STALE_DAYS * 86400000);
+const priceText = (p) => (isFresh(p) ? fmt(p.mnt) + '₮' : 'үнийг DM-ээр асуугаарай');
+
 async function getPrice(name) {
   const url = FS + encodeURIComponent(name) + '?key=' + process.env.FIREBASE_API_KEY;
   const r = await fetch(url);
@@ -29,7 +35,7 @@ async function getPrice(name) {
   const d = await r.json();
   const f = d.fields || {};
   const val = (x) => x ? (x.stringValue ?? Number(x.integerValue ?? x.doubleValue)) : undefined;
-  return { image: val(f.image), mnt: val(f.mnt), krw: val(f.krw) };
+  return { image: val(f.image), mnt: val(f.mnt), krw: val(f.krw), updated: Number(val(f.updated)) || 0 };
 }
 
 export default async function handler(req, res) {
@@ -43,7 +49,7 @@ export default async function handler(req, res) {
   if (q && q.product && q.caption) {
     const p = await getPrice(q.product);
     if (p && p.image && p.mnt) {
-      const caption = q.caption.replace(/\{price\}/g, fmt(p.mnt) + '₮').replace(/\{site\}/g, SITE);
+      const caption = q.caption.replace(/\{price\}/g, priceText(p)).replace(/\{site\}/g, SITE);
       const r = await fetch('https://graph.facebook.com/v21.0/' + PAGE + '/photos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,7 +57,7 @@ export default async function handler(req, res) {
       });
       const d = await r.json();
       if (!r.ok) return res.status(500).json({ error: 'facebook', detail: d });
-      return res.json({ posted: q.product, mnt: p.mnt, source: 'queue', post_id: d.post_id || d.id });
+      return res.json({ posted: q.product, mnt: p.mnt, priceShown: isFresh(p), source: 'queue', post_id: d.post_id || d.id });
     }
   }
 
@@ -66,7 +72,7 @@ export default async function handler(req, res) {
     const caption =
       hook + '\n\n' +
       '📦 ' + name + '\n' +
-      '💰 Үнэ: ' + fmt(p.mnt) + '₮\n\n' +
+      '💰 Үнэ: ' + priceText(p) + '\n\n' +
       'Захиалга өгөх: ' + SITE + '\n' +
       'Солонгосын албан ёсны сайтаас — жинхэнэ бараа, найдвартай хүргэлт.\n\n' +
       '#Arishop #Солонгос #Захиалга #' + name.split(' ')[0].replace(/[^\wа-яА-ЯөүёӨҮЁ]/g, '');
@@ -78,7 +84,7 @@ export default async function handler(req, res) {
     });
     const d = await r.json();
     if (!r.ok) return res.status(500).json({ error: 'facebook', detail: d });
-    return res.json({ posted: name, mnt: p.mnt, post_id: d.post_id || d.id });
+    return res.json({ posted: name, mnt: p.mnt, priceShown: isFresh(p), post_id: d.post_id || d.id });
   }
   res.status(404).json({ error: 'зураг/үнэтэй бараа олдсонгүй — эхлээд sync ажиллуулна уу' });
 }

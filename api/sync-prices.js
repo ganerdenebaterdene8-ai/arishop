@@ -25,6 +25,7 @@ async function naver(q) {
   const r = await fetch('https://openapi.naver.com/v1/search/shop.json?display=10&sort=asc&query=' + encodeURIComponent(q), {
     headers: { 'X-Naver-Client-Id': process.env.NAVER_ID, 'X-Naver-Client-Secret': process.env.NAVER_SECRET },
   });
+  if (r.status === 404) throw new Error('naver 404 SE05 — Naver Shopping API 2026-07-31-нд хаагдсан, өөр эх сурвалж (sync-coupang) хэрэгтэй');
   if (!r.ok) throw new Error('naver ' + r.status);
   const d = await r.json();
   return (d.items || []).map((i) => ({
