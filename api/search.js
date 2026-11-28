@@ -49,10 +49,11 @@ const shopLinks = (ko, raw) => {
   return [
     // Хамгийн найдвартай: Messenger-ээр хүсэлт — манай DM бот/ажилтан Солонгосоос хайж өгнө
     { label: '💬 Messenger-ээр хүсэлт илгээх', url: 'https://m.me/' + PAGE_ID + '?text=' + msg, primary: true },
-    // Дэлгүүрүүд гаднаас орж ирэхэд "봇 확인" шалгалт гаргаж болно
-    { label: 'Gmarket', url: 'https://www.gmarket.co.kr/n/search?keyword=' + q },
+    // Olive Young, Musinsa — Монголоос нээгддэг (2026-11-28 эзэн шалгасан)
     { label: 'Olive Young', url: 'https://www.oliveyoung.co.kr/store/search/getSearchMain.do?query=' + q },
     { label: 'Musinsa', url: 'https://www.musinsa.com/search/goods?keyword=' + q },
+    // Gmarket гаднаас орж ирэхэд "봇 확인" шалгалт гаргадаг (2026-11-28 эзэн шалгасан)
+    { label: 'Gmarket', url: 'https://www.gmarket.co.kr/n/search?keyword=' + q },
   ];
 };
 
