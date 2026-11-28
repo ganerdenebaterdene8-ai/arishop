@@ -1,1 +1,4 @@
 out/
+video/node_modules/
+video/out/
+video/public/product.*
