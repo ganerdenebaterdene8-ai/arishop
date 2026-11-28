@@ -1,0 +1,19 @@
+name: Түр — Naver каталог судалгаа
+on:
+  push:
+    branches: [research/naver-probe]
+    paths: [scripts/naver-probe.mjs, .github/workflows/naver-probe.yml]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/naver-probe.mjs
+      - run: |
+          git config user.name "arishop-bot"; git config user.email "arishop-bot@users.noreply.github.com"
+          git add reports/naver-probe.json && git commit -m "Naver судалгааны үр дүн" && git push
