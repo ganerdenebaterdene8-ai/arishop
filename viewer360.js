@@ -20,6 +20,8 @@
         var s = function (k) { return f[k] && f[k].stringValue || ''; };
         var glb = s('model3d');
         if (!glb) return;
+        // Үнэ шинэчлэлт өөр зарын зураг сонгосон бол хуучин загварыг харуулахгүй (шинэ загвар үүстэл)
+        if (s('model3dImage') && s('image') && s('model3dImage') !== s('image')) return;
         var name = s('name') || decodeURIComponent(doc.name.split('/').pop());
         var item = { name: name, glb: glb, poster: s('image') };
         byName[name] = item;

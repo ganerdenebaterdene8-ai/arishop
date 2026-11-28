@@ -171,7 +171,8 @@ async function start(doc) {
   });
   const id = d.result;
   if (!id) throw new Error('даалгаврын дугаар ирээгүй');
-  await patch(doc.id, { model3dTask: id, model3dStatus: 'PENDING', model3dImage: doc.image, model3dError: '' });
+  // model3d-г хоослоно: хуучирсан загвар шинэ зурагтай андуурагдаж харагдахгүй
+  await patch(doc.id, { model3dTask: id, model3dStatus: 'PENDING', model3dImage: doc.image, model3dError: '', model3d: '' });
   doc.model3dTask = id; doc.model3dStatus = 'PENDING';
   note('🚀 ' + doc.name + ' — загвар үүсгэж эхэллээ');
 }
@@ -198,13 +199,18 @@ async function main() {
 
   // 2. Шинэ даалгавар үүсгэх (каталогийн дарааллаар)
   const order = new Map(CATALOG.map((c, i) => [c[0], i]));
-  let cand = docs.filter((d) => d.image && !d.model3d && d.model3dStatus !== 'removed'
-    && !(d.model3dTask && RUNNING.has(d.model3dStatus)) && (d.model3dTries || 0) < MAX_TRIES);
+  const busy = (d) => !!(d.model3dTask && RUNNING.has(d.model3dStatus));
+  // Хуучирсан загвар: үнэ шинэчлэлт өөр зарын зураг сонгосон (сайт ийм загварыг харуулахгүй)
+  const stale = (d) => !!(d.model3d && d.model3dImage && d.image !== d.model3dImage);
+  const rank = (d) => (order.get(d.name) ?? 1e9) + (stale(d) ? 1e10 : 0); // шинэ бараа эхэнд, хуучирсан нь сүүлд
+  let cand = docs.filter((d) => d.image && (!d.model3d || stale(d)) && d.model3dStatus !== 'removed'
+    && !busy(d) && (d.model3dTries || 0) < MAX_TRIES);
   if (ONLY) {
     cand = docs.filter((d) => (d.name === ONLY || d.id === ONLY) && d.image);
     if (!cand.length) note('⚠️ "' + ONLY + '" нэртэй зурагтай бараа олдсонгүй');
+    else if (busy(cand[0])) { note('⏳ "' + ONLY + '" — загвар аль хэдийн үүсч байна, давхар үүсгэхгүй'); cand = []; }
   }
-  cand.sort((a, b) => (order.get(a.name) ?? 1e9) - (order.get(b.name) ?? 1e9));
+  cand.sort((a, b) => rank(a) - rank(b));
   cand = cand.slice(0, ONLY ? 1 : MAX_NEW);
 
   if (cand.length) {
