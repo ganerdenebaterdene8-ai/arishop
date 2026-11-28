@@ -52,7 +52,9 @@ function pick(items, hint) {
 }
 
 async function save(name, doc) {
-  const url = FS + encodeURIComponent(name) + '?key=' + process.env.FIREBASE_API_KEY;
+  // updateMask-тай PATCH: зөвхөн эдгээр талбарыг шинэчилнэ — 3D загварын талбарууд (model3d…) устахгүй
+  const mask = ['name', 'query', 'krw', 'mnt', 'rate', 'image', 'link', 'mall', 'updated'].map((f) => 'updateMask.fieldPaths=' + f).join('&');
+  const url = FS + encodeURIComponent(name) + '?key=' + process.env.FIREBASE_API_KEY + '&' + mask;
   const fields = {
     name: { stringValue: name },
     query: { stringValue: doc.query },
