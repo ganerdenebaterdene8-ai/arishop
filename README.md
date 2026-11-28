@@ -8,7 +8,7 @@
 - `viewer360.js` — model3d-тэй барааны зураг дээр "360°" товч гаргаж, эргүүлж харах / AR цонх нээнэ.
 
 Нэг удаагийн тохиргоо:
-1. Vercel → Storage → Create → **Blob** (арилжааны нэр: arishop-models) → токеныг хуулна.
+1. Vercel → Storage → Create → **Blob** (нэр нь жишээ нь: arishop-models) → токеныг хуулна.
 2. GitHub → Settings → Secrets and variables → Actions → **New repository secret**:
    `MESHY_API_KEY`, `BLOB_READ_WRITE_TOKEN` (`FIREBASE_API_KEY` аль хэдийн байгаа).
 3. (Сонголт) Variables → `MESHY_MAX_PER_DAY` = өдөрт үүсгэх загварын тоо.
