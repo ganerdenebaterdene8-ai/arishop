@@ -1,6 +1,7 @@
 // Солонгосын дэлгүүрүүдээс (Naver Shopping — Coupang, 11st, Gmarket, Olive Young, Musinsa … нэгтгэдэг) бараа хайх.
 // GET /api/search?q=패딩   эсвэл   /api/search?q=өвлийн гутал
 // Монгол үгийг жижиг толь бичгээр солонгос руу хөрвүүлнэ. Үнийг сайтын бусад хэсэгтэй ЯГ ижил томьёогоор ₮ болгоно (_pricing.js).
+import crypto from 'crypto';
 import { krwToMnt } from './_pricing.js';
 
 const MARGIN = Number(process.env.MARGIN || 0.15);
@@ -39,46 +40,79 @@ export function toKorean(q) {
 
 const clean = (t) => String(t || '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
 
+// Хайлтын эх сурвалж бүтэлгүйтвэл хэрэглэгчид Солонгосын дэлгүүрүүдийн хайлтын холбоосыг өгнө (үргэлж ажиллана)
+const shopLinks = (ko) => {
+  const q = encodeURIComponent(ko);
+  return [
+    { label: 'Coupang', url: 'https://www.coupang.com/np/search?q=' + q },
+    { label: 'Naver Shopping', url: 'https://search.shopping.naver.com/search/all?query=' + q },
+    { label: 'Gmarket', url: 'https://www.gmarket.co.kr/n/search?keyword=' + q },
+    { label: 'Olive Young', url: 'https://www.oliveyoung.co.kr/store/search/getSearchMain.do?query=' + q },
+    { label: 'Musinsa', url: 'https://www.musinsa.com/search/goods?keyword=' + q },
+  ];
+};
+
+// 1) Naver Shopping (хуучин openapi.naver.com — 2026 онд хязгаарлагдаж эхэлсэн)
+async function naver(query) {
+  if (!process.env.NAVER_ID || !process.env.NAVER_SECRET) throw new Error('naver: түлхүүргүй');
+  const r = await fetch('https://openapi.naver.com/v1/search/shop.json?display=24&sort=sim&query=' + encodeURIComponent(query), {
+    headers: { 'X-Naver-Client-Id': process.env.NAVER_ID, 'X-Naver-Client-Secret': process.env.NAVER_SECRET },
+  });
+  if (!r.ok) {
+    let code = '';
+    try { const e = await r.json(); code = e.errorCode || ''; } catch (e) {}
+    throw new Error('naver ' + r.status + (code ? ' ' + code : ''));
+  }
+  const d = await r.json();
+  return (d.items || []).map((i) => ({
+    title: clean(i.title).slice(0, 90), krw: Number(i.lprice) || 0,
+    image: String(i.image || '').replace(/^http:/, 'https:'), link: String(i.link || ''), mall: clean(i.mallName) || 'Naver',
+  }));
+}
+
+// 2) Coupang Partners (COUPANG_ACCESS_KEY / COUPANG_SECRET_KEY тохируулсан бол)
+async function coupang(query) {
+  const AK = process.env.COUPANG_ACCESS_KEY, SK = process.env.COUPANG_SECRET_KEY;
+  if (!AK || !SK) throw new Error('coupang: түлхүүргүй');
+  const PATH = '/v2/providers/affiliate_open_api/apis/openapi/products/search';
+  const qs = 'keyword=' + encodeURIComponent(query) + '&limit=20';
+  const dt = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z').slice(2);
+  const sig = crypto.createHmac('sha256', SK).update(dt + 'GET' + PATH + qs).digest('hex');
+  const r = await fetch('https://api-gateway.coupang.com' + PATH + '?' + qs, {
+    headers: { Authorization: `CEA algorithm=HmacSHA256, access-key=${AK}, signed-date=${dt}, signature=${sig}` },
+  });
+  if (!r.ok) throw new Error('coupang ' + r.status);
+  const d = await r.json();
+  return (((d.data || {}).productData) || []).map((i) => ({
+    title: clean(i.productName).slice(0, 90), krw: Number(i.productPrice) || 0,
+    image: String(i.productImage || ''), link: String(i.productUrl || ''), mall: 'Coupang',
+  }));
+}
+
 export default async function handler(req, res) {
   const raw = String((req.query && req.query.q) || '').trim().slice(0, 80);
   if (!raw) return res.status(400).json({ error: 'Хайх үгээ бичнэ үү' });
-  if (!process.env.NAVER_ID || !process.env.NAVER_SECRET) return res.status(500).json({ error: 'NAVER_ID / NAVER_SECRET тохируулаагүй' });
   const tr = toKorean(raw);
-  // Орчуулагдаагүй кирилл үг Naver-т юу ч олдуулахгүй тул хасна
+  // Орчуулагдаагүй кирилл үг хайлтад юу ч олдуулахгүй тул хасна
   const query = tr.query.replace(/[а-яөүё]+/gi, ' ').replace(/\s+/g, ' ').trim();
   if (!query) {
-    return res.json({ query: raw, searched: '', count: 0, items: [], hint: 'Солонгос эсвэл англиар бичвэл илүү сайн олдоно (жишээ: 패딩, Nike, sunscreen).' });
+    return res.json({ query: raw, searched: '', count: 0, items: [], links: [], hint: 'Солонгос эсвэл англиар бичвэл илүү сайн олдоно (жишээ: 패딩, Nike, sunscreen).' });
   }
-  try {
-    const r = await fetch('https://openapi.naver.com/v1/search/shop.json?display=24&sort=sim&query=' + encodeURIComponent(query), {
-      headers: { 'X-Naver-Client-Id': process.env.NAVER_ID, 'X-Naver-Client-Secret': process.env.NAVER_SECRET },
-    });
-    if (!r.ok) return res.status(502).json({ error: 'Солонгосын хайлт түр ажиллахгүй байна (' + r.status + ')' });
-    const d = await r.json();
-    const rate = await krwToMnt();
-    const items = (d.items || [])
-      .map((i) => {
-        const krw = Number(i.lprice) || 0;
-        return {
-          title: clean(i.title).slice(0, 90),
-          krw,
-          mnt: Math.round((krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000,
-          image: String(i.image || '').replace(/^http:/, 'https:'),
-          link: String(i.link || ''),
-          mall: clean(i.mallName) || 'Naver',
-          brand: clean(i.brand || i.maker),
-        };
-      })
-      .filter((i) => i.krw >= 1000 && i.image && /^https:\/\//.test(i.link));
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-    res.json({
-      query: raw,
-      searched: query,
-      count: items.length,
-      items,
-      hint: tr.leftoverCyrillic ? 'Зарим үгийг орчуулж чадсангүй — солонгос эсвэл англиар бичвэл илүү олдоно.' : '',
-    });
-  } catch (e) {
-    res.status(500).json({ error: 'Хайлт амжилтгүй боллоо' });
+  const errors = [];
+  let items = [], source = '';
+  for (const [name, fn] of [['naver', naver], ['coupang', coupang]]) {
+    try { items = await fn(query); source = name; if (items.length) break; } catch (e) { errors.push(e.message); }
   }
+  if (errors.length) console.error('search:', errors.join(' | '));
+  const rate = await krwToMnt();
+  items = items
+    .map((i) => ({ ...i, mnt: Math.round((i.krw * rate * (1 + MARGIN) + SHIP_MNT) / 1000) * 1000 }))
+    .filter((i) => i.krw >= 1000 && /^https:\/\//.test(i.image) && /^https:\/\//.test(i.link));
+  const links = shopLinks(query);
+  let hint = tr.leftoverCyrillic ? 'Зарим үгийг орчуулж чадсангүй — солонгос эсвэл англиар бичвэл илүү олдоно.' : '';
+  if (!items.length && errors.length) {
+    hint = 'Шууд хайлт одоохондоо ажиллахгүй байна. Доорх дэлгүүрээс бараагаа олоод холбоосыг нь чатаар илгээгээрэй — бид үнийг нь бодож захиалж өгнө.';
+  }
+  res.setHeader('Cache-Control', items.length ? 's-maxage=3600, stale-while-revalidate=86400' : 'no-store');
+  res.json({ query: raw, searched: query, source, count: items.length, items, links, hint, errors });
 }
